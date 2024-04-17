@@ -1,0 +1,17 @@
+{
+  "name": "merch",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "arb": "bun index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "date-fns": "^3.6.0"
+  }
+}
