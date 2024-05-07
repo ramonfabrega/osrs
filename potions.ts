@@ -7,13 +7,16 @@ const IDS = {
   BREW_3: 6687,
   STAMINA_4: 12625,
   STAMINA_3: 12627,
+  PRAYER_3: 139,
+  PRAYER_4: 2434,
 };
 
 export async function checkPotionsArbs() {
-  const [brew, restore, stamina] = await Promise.all([
+  const [brew, restore, stamina, prayer] = await Promise.all([
     checkArbitrage(IDS.BREW_4, IDS.BREW_3, 'Brew'),
     checkArbitrage(IDS.RESTORES_4, IDS.RESTORES_3, 'Restore'),
     checkArbitrage(IDS.STAMINA_4, IDS.STAMINA_3, 'Stamina'),
+    checkArbitrage(IDS.PRAYER_4, IDS.PRAYER_3, 'Prayer'),
   ]);
 
   if (brew.profit > 0) {
@@ -24,6 +27,9 @@ export async function checkPotionsArbs() {
   }
   if (stamina.profit > 0) {
     console.log(`Stamina profit: ${stamina.profit.toFixed(2)} | sell3: ${stamina.sell3.price} | buy4: ${stamina.buy4.price}`);
+  }
+  if (prayer.profit > 0) {
+    console.log(`Prayer profit: ${prayer.profit.toFixed(2)} | sell3: ${prayer.sell3.price} | buy4: ${prayer.buy4.price}`);
   }
 }
 
