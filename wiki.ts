@@ -53,3 +53,14 @@ export async function getLastSell(id: number) {
 
   return { price: item.low, time };
 }
+
+export async function logCombo(inputIds: number[], outputId: number, desiredProfit: number = 100000){
+  const input = await Promise.all(inputIds.map(getLastSell));
+  const output = await getLastBuy(outputId);
+  // calculate profit
+  const inputCost = input.reduce((acc, i) => acc + i.price, 0);
+  const profit = output.price *0.99 - inputCost;
+  if (profit > desiredProfit){
+    console.log(`Input: ${input.map(i => i.price).join(", ")} | Output: ${output.price} | Profit: ${profit}`);
+  }
+}

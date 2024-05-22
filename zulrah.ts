@@ -1,4 +1,4 @@
-import { getLastBuy, getLastSell } from "./wiki";
+import { getLastBuy, getLastSell, logCombo } from "./wiki";
 
 const IDS = {
   SCALES: 12934,
@@ -6,12 +6,25 @@ const IDS = {
   HELM: 12929,
   TANZ: 12922,
   MAGIC: 12932,
+  TRIDENT: 11908,
+  TOXIC_TRIDENT: 12900,
+  STAFF_OF_DEAD: 11791,
+  TOXIC_STAFF: 12902,
 };
 
 export async function checkScalesArb() {
   const scales = await getScaleInfo();
   console.log(scales);
   await checkItems();
+}
+
+export async function checkPartsArb() {
+  console.log("Toxic Staff");
+  await logCombo([IDS.STAFF_OF_DEAD, IDS.MAGIC], IDS.TOXIC_STAFF);
+  console.log("Toxic Trident");
+  await logCombo([IDS.TRIDENT, IDS.MAGIC], IDS.TOXIC_TRIDENT);
+  console.log("Tanz Helm");
+  await logCombo([IDS.VISAGE], IDS.HELM);
 }
 
 async function checkItems() {
@@ -33,3 +46,18 @@ async function getScaleInfo() {
   const total = price * 20000;
   return { price, total };
 }
+
+// async function getToxicTridentInfo() {
+//   const { price } = await getLastBuy(IDS.TRIDENT);
+//   const toxic = await getLastSell(IDS.TOXIC_TRIDENT);
+//   const profit = price * 0.99 - toxic.price;
+//   return { price, toxic, profit };
+// }
+
+// async function getToxicStaffInfo() {
+//   const { price : toxicStaffPrice } = await getLastBuy(IDS.TOXIC_STAFF);
+//   const 
+//   const toxic = await getLastSell(IDS.TOXIC_TRIDENT);
+//   const profit = price * 0.99 - toxic.price;
+//   return { price, toxic, profit };
+// }
