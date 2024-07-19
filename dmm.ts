@@ -56,9 +56,11 @@ export async function checDmmArb() {
     });
 
   const prettyItems = fullItems
-    .map((item) =>
-      formatItem(item, item.name, p(calc(item.highalch || -10000, item.high)))
-    )
+    .map((item) => {
+      const high = p(calc(item.highalch || -10000, item.high));
+      const low = p(calc(item.highalch || -10000, item.low));
+      return formatItem(item, item.name, `${high} (${low})`);
+    })
     .join("\n");
 
   // console.log(fullItems);
