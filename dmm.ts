@@ -61,4 +61,5 @@ export async function checDmmArb() {
 
   // console.log(fullItems);
   console.log(prettyItems);
+  console.log("--------------------");
 }
