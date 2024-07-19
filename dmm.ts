@@ -12,7 +12,7 @@ mappings.forEach((m) => {
 });
 
 export async function checDmmArb() {
-  const items = await fetchItems({ mode: "osrs" });
+  const items = await fetchItems({ mode: "dmm" });
 
   // console.log(items);
 
@@ -30,15 +30,17 @@ export async function checDmmArb() {
           ...value,
         };
       } else {
-        console.log("failed to get entry", { key, value, entry });
+        // console.log("failed to get entry", { key, value, entry });
       }
     })
     .filter((r) => r !== undefined)
     .filter((r) => {
       if (!r.highalch) return false;
+      if (r.high < 100) return false;
 
       return r.highalch - r.high > 1000;
     })
+    .filter((r) => r.high < 10_000)
 
     .sort((a, b) => {
       if (!a.highalch || !b.highalch) {
@@ -51,15 +53,12 @@ export async function checDmmArb() {
       return _b - _a;
     });
 
-  console.log(fullItems);
+  const prettyItems = fullItems
+    .map((item) =>
+      formatItem(item, item.name, p((item.highalch || -100000) - item.high))
+    )
+    .join("\n");
 
-  // console.log(
-  //   [
-  //     formatItem(tbow, "tbow", profit(tbow)),
-  //     formatItem(scythe, "scythe", profit(scythe)),
-  //     formatItem(shadow, "shadow", profit(shadow)),
-  //   ].join("    |    ")
-  // );
+  // console.log(fullItems);
+  console.log(prettyItems);
 }
-
-function calc() {}
