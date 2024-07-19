@@ -5,6 +5,8 @@ import mappings from "./osrs-mappings.json";
 
 if (import.meta.main) loop(checDmmArb, 15_000);
 
+const NATURE_RUNE_PRICE = 200;
+
 const map = new Map<number, (typeof mappings)[number]>();
 
 mappings.forEach((m) => {
@@ -38,7 +40,7 @@ export async function checDmmArb() {
       if (!r.highalch) return false;
       if (r.high < 100) return false;
 
-      return r.highalch - r.high > 1000;
+      return calc(r.highalch, r.high) > 1000;
     })
     .filter((r) => r.high < 10_000)
 
@@ -55,11 +57,15 @@ export async function checDmmArb() {
 
   const prettyItems = fullItems
     .map((item) =>
-      formatItem(item, item.name, p((item.highalch || -100000) - item.high))
+      formatItem(item, item.name, p(calc(item.highalch || -10000, item.high)))
     )
     .join("\n");
 
   // console.log(fullItems);
   console.log(prettyItems);
   console.log("--------------------");
+}
+
+function calc(alch: number, price: number) {
+  return alch * 1.3 - NATURE_RUNE_PRICE - price;
 }
