@@ -4,7 +4,7 @@ import zod from "zod";
 import { fetchStars, type ParsedStar } from "../../stars";
 import { usePolling } from "../../hooks/use-polling";
 import ProgressBar from "../components/ProgressBar";
-import Table, { calculateTableWidth, createColumns } from "../components/Table";
+import Table, { calculateTableWidth, type Columns } from "../components/Table";
 
 export const alias = "s";
 
@@ -47,7 +47,7 @@ export default function Stars({ options }: Props) {
     return <Text color="gray">No active stars found</Text>;
   }
 
-  const columns = createColumns<ParsedStar>([
+  const columns: Columns<ParsedStar> = [
     {
       accessor: "tier",
       header: "Tier",
@@ -62,7 +62,7 @@ export default function Stars({ options }: Props) {
       header: "Key",
       cell: (value) => <Text dimColor>{value}</Text>,
     },
-  ]);
+  ];
 
   const tableWidth = calculateTableWidth(data, columns);
   const title = `Shooting Stars (${data.length} active)`;
@@ -102,7 +102,7 @@ function calculateProgressBarWidth(
   return Math.max(20, tableWidth - titleLength - spacing);
 }
 
-function getTierColor(tier: number | string) {
+function getTierColor(tier: number) {
   switch (tier) {
     case 9:
       return "#00ff00";
