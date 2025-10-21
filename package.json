@@ -1,6 +1,5 @@
 {
-  "name": "merch",
-  "module": "index.ts",
+  "name": "osrs",
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest"
