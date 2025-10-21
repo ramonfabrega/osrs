@@ -1,5 +1,5 @@
-import { loop } from "./utils";
-import { fetchItem, formatItem, p, type Item } from "./wiki";
+import { loop } from "../utils";
+import { fetchItem, formatItem, p, type Item } from "../utils/wiki";
 
 const IDS = {
   TBOW: 20997,

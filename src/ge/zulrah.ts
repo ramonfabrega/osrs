@@ -1,4 +1,4 @@
-import { getLastBuy, getLastSell, logCombo } from "./wiki";
+import { getLastBuy, getLastSell, logCombo } from "../utils/wiki";
 
 const IDS = {
   SCALES: 12934,
@@ -56,7 +56,7 @@ async function getScaleInfo() {
 
 // async function getToxicStaffInfo() {
 //   const { price : toxicStaffPrice } = await getLastBuy(IDS.TOXIC_STAFF);
-//   const 
+//   const
 //   const toxic = await getLastSell(IDS.TOXIC_TRIDENT);
 //   const profit = price * 0.99 - toxic.price;
 //   return { price, toxic, profit };

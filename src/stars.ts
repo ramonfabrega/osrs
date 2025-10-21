@@ -1,5 +1,5 @@
 import { formatDistanceToNowStrict } from "date-fns";
-import { loop } from "../utils";
+import { loop } from "./utils";
 
 if (import.meta.main) loop(checkStars, 60_000);
 

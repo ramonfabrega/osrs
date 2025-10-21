@@ -1,7 +1,7 @@
-import { loop } from "./utils";
-import { date, fetchItem, fetchItems, formatItem, p, type Item } from "./wiki";
+import { loop } from "../utils";
+import { date, fetchItems, formatItem, p } from "../utils/wiki";
 
-import mappings from "./osrs-mappings.json";
+import mappings from "./data/osrs-mappings.json";
 
 if (import.meta.main) loop(checDmmArb, 15_000);
 
