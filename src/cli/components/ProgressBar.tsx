@@ -19,27 +19,20 @@ export default function ProgressBar({
     return () => clearInterval(timer);
   }, []);
 
-  const totalSlots = calculateTotalSlots(width);
-
   if (!nextFetchAt) {
-    return <Text dimColor>{slots(totalSlots, "○")}</Text>;
+    return <Text dimColor>{slots(width, "░")}</Text>;
   }
 
   const progress = calculateProgress(nextFetchAt, interval);
-  const filledSlots = calculateFilledSlots(progress, totalSlots);
-  const emptySlots = totalSlots - filledSlots;
+  const filledSlots = calculateFilledSlots(progress, width);
+  const emptySlots = width - filledSlots;
 
   return (
     <Text>
-      {slots(filledSlots, "●")}
-      {filledSlots > 0 && emptySlots > 0 && " "}
-      <Text dimColor>{slots(emptySlots, "○")}</Text>
+      {slots(filledSlots, "█")}
+      <Text dimColor>{slots(emptySlots, "░")}</Text>
     </Text>
   );
-}
-
-function calculateTotalSlots(width: number): number {
-  return Math.floor((width + 1) / 2);
 }
 
 function calculateProgress(nextFetchAt: number, interval: number): number {
@@ -52,5 +45,5 @@ function calculateFilledSlots(progress: number, totalSlots: number): number {
 }
 
 function slots(length: number, char: string): string {
-  return Array.from({ length }, () => char).join(" ");
+  return char.repeat(length);
 }

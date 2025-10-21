@@ -65,7 +65,7 @@ export default function Stars({ options }: Props) {
   ]);
 
   const tableWidth = calculateTableWidth(data, columns);
-  const title = `🌟 Shooting Stars (${data.length} active)`;
+  const title = `Shooting Stars (${data.length} active)`;
   const spacing = 1;
   const progressBarWidth = calculateProgressBarWidth(
     title,
@@ -98,7 +98,7 @@ function calculateProgressBarWidth(
   tableWidth: number,
   spacing: number
 ): number {
-  const titleLength = title.length + 1;
+  const titleLength = title.length;
   return Math.max(20, tableWidth - titleLength - spacing);
 }
 
