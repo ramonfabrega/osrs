@@ -7,11 +7,9 @@ export type TableLayout<T> = {
   columnWidths: number[];
 };
 
-export type Columns<T> = ReadonlyArray<
-  {
-    [K in keyof T]: ColumnDef<T, K>;
-  }[keyof T]
->;
+export type Columns<T> = ReadonlyArray<Column<T>>;
+
+type Column<T> = { [K in keyof T]: ColumnDef<T, K> }[keyof T];
 
 type ColumnDef<T, K extends keyof T> = {
   accessor: K;
