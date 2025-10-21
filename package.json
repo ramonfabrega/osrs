@@ -2,9 +2,6 @@
   "name": "merch",
   "module": "index.ts",
   "type": "module",
-  "scripts": {
-    "arb": "bun index.ts"
-  },
   "devDependencies": {
     "@types/bun": "latest"
   },
