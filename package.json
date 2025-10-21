@@ -1,6 +1,9 @@
 {
   "name": "osrs",
   "type": "module",
+  "scripts": {
+    "cli": "bun run src/cli"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -8,6 +11,11 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "date-fns": "^3.6.0"
+    "date-fns": "^3.6.0",
+    "ink": "^6.3.1",
+    "ink-spinner": "^5.0.0",
+    "pastel": "^4.0.0",
+    "react": "^19.2.0",
+    "zod": "^4.1.12"
   }
 }

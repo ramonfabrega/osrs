@@ -8,7 +8,7 @@ async function checkStars() {
   console.table(data);
 }
 
-async function fetchStars(): Promise<ParsedStar[]> {
+export async function fetchStars(): Promise<ParsedStar[]> {
   const res = await fetch("https://old.07.gg/shooting-stars/api/calls");
   const json: Star[] = await res.json();
 
@@ -146,7 +146,7 @@ function isRecentlyActive(star: Star) {
   return star.calledAt >= tenMinAgo;
 }
 
-type ParsedStar = {
+export type ParsedStar = {
   world: number;
   tier: number;
   key: string;
