@@ -10,7 +10,7 @@ async function checkStars() {
 
 async function fetchStars(): Promise<ParsedStar[]> {
   const res = await fetch("https://old.07.gg/shooting-stars/api/calls");
-  const json = (await res.json()) as Star[];
+  const json: Star[] = await res.json();
 
   return json
     .filter(isTargetLocation)
@@ -92,6 +92,20 @@ const IGNORED_LOCATIONS = [
   "RESOURCE_AREA",
   "LUNAR_ISLE_MINE_ENTRANCE",
   "ABANDONED_MINE",
+  "SHAYZIEN_MINE",
+  "DESERT_QUARRY",
+  "DAEYALT_ESSENCE_MINE_ENTRANCE",
+  "SOUTH_WEST_WILDERNESS_MINE",
+  "COAL_TRUCKS",
+  "SOUTH_WILDERNESS_MINE__MAGE_OF_ZAMORAK",
+  "HOSIDIUS_MINE",
+  "KEBOS_LOWLANDS_MINE__KEBOS_SWAMP",
+  "AGILITY_PYRAMID_MINE",
+  "PORT_PISCARILIUS_MINE",
+  "KELDAGRIM_ENTRANCE_MINE",
+  "NORTH_CRANDOR_MINE",
+  "LOVAKENGJ__BANK",
+  "ISLE_OF_SOULS_MINE",
 ];
 function isTargetLocation(star: Star) {
   if (typeof star.locationKey !== "string") return false;
@@ -120,16 +134,16 @@ function isGridMasterWorld(w: number) {
     r(590, 618) ||
     r(622, 623) ||
     w >= 628
-  )
+  ) {
     return true;
+  }
 
   return false;
 }
 
 function isRecentlyActive(star: Star) {
-  // calledAt is less than 10min
-  const tenMinutesAgo = Date.now() - 10 * 60 * 1000;
-  return star.calledAt >= tenMinutesAgo;
+  const tenMinAgo = Date.now() - 10 * 60 * 1000;
+  return star.calledAt >= tenMinAgo;
 }
 
 type ParsedStar = {
@@ -138,7 +152,6 @@ type ParsedStar = {
   key: string;
   location: string;
   called: string;
-  // end: string;
 };
 
 type Star = {
