@@ -23,25 +23,27 @@ export default function ProgressBar({
     return <Text dimColor>{slots(width, "░")}</Text>;
   }
 
-  const progress = calculateProgress(nextFetchAt, interval);
-  const filledSlots = calculateFilledSlots(progress, width);
-  const emptySlots = width - filledSlots;
+  const { filled, empty } = calculateSlots(nextFetchAt, interval, width);
 
   return (
     <Text>
-      {slots(filledSlots, "█")}
-      <Text dimColor>{slots(emptySlots, "░")}</Text>
+      {slots(filled, "█")}
+      <Text dimColor>{slots(empty, "░")}</Text>
     </Text>
   );
 }
 
-function calculateProgress(nextFetchAt: number, interval: number): number {
+function calculateSlots(
+  nextFetchAt: number,
+  interval: number,
+  totalSlots: number
+) {
   const timeRemainingMs = Math.max(0, nextFetchAt - Date.now());
-  return 1 - timeRemainingMs / interval;
-}
+  const progress = 1 - timeRemainingMs / interval;
 
-function calculateFilledSlots(progress: number, totalSlots: number): number {
-  return Math.floor(progress * totalSlots);
+  const filled = Math.floor(progress * totalSlots);
+  const empty = totalSlots - filled;
+  return { filled, empty };
 }
 
 function slots(length: number, char: string): string {

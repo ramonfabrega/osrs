@@ -4,21 +4,39 @@ import { loop } from "./utils";
 if (import.meta.main) loop(checkStars, 60_000);
 
 async function checkStars() {
-  const data = await fetchStars();
-  console.table(data);
+  const { stars } = await fetchStars();
+  console.table(stars);
 }
 
-export async function fetchStars(): Promise<ParsedStar[]> {
+type StarOptions = {
+  limit: number;
+  minTier: number;
+};
+
+export async function fetchStars(
+  options: StarOptions = { limit: 20, minTier: 1 }
+): Promise<{
+  stars: ParsedStar[];
+  meta: { total: number; filtered: number };
+}> {
   const res = await fetch("https://old.07.gg/shooting-stars/api/calls");
   const json: Star[] = await res.json();
 
-  return json
+  const stars = json
     .filter(isTargetLocation)
     .filter(isTargetWorld)
     .filter(isRecentlyActive)
+    .filter(isMinTier(options.minTier))
     .sort(sortStars)
+    .slice(0, options.limit)
     .map(transformStar);
+
+  const meta = { total: json.length, filtered: stars.length };
+
+  return { stars, meta };
 }
+
+const isMinTier = (minTier: number) => (star: Star) => star.tier >= minTier;
 
 function transformStar(s: Star): ParsedStar {
   const tstamp = new Date(s.calledAt);

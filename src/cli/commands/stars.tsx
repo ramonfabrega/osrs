@@ -43,8 +43,12 @@ export default function Stars({ options }: Props) {
     );
   }
 
-  if (data.length === 0) {
+  if (data.meta.total === 0) {
     return <Text color="gray">No active stars found</Text>;
+  }
+
+  if (data.meta.filtered === 0) {
+    return <Text color="gray">No active stars match the filters</Text>;
   }
 
   const columns: Columns<ParsedStar> = [
@@ -64,8 +68,8 @@ export default function Stars({ options }: Props) {
     },
   ];
 
-  const tableWidth = calculateTableWidth(data, columns);
-  const title = `Shooting Stars (${data.length} active)`;
+  const tableWidth = calculateTableWidth(data.stars, columns);
+  const title = `Shooting Stars (${data.meta.filtered} / ${data.meta.total})`;
   const spacing = 1;
   const progressBarWidth = calculateProgressBarWidth(
     title,
@@ -79,6 +83,7 @@ export default function Stars({ options }: Props) {
         <Text bold color="cyan">
           {title}
         </Text>
+
         <Box marginLeft={spacing}>
           <ProgressBar
             nextFetchAt={nextFetchAt}
@@ -88,7 +93,7 @@ export default function Stars({ options }: Props) {
         </Box>
       </Box>
 
-      <Table data={data} columns={columns} />
+      <Table data={data.stars} columns={columns} />
     </Box>
   );
 }
