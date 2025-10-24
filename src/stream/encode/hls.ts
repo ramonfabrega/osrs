@@ -11,16 +11,12 @@ export async function renderStarsToHLS(
   stars: ParsedStar[],
   outputDir: string
 ): Promise<void> {
-  // First, render to PNG
-  console.log("🎨 Rendering PNG...");
   const png = await renderStarsPNG(stars);
 
-  // Write PNG to temp file
   const tempPNG = `${outputDir}/frame.png`;
   await Bun.write(tempPNG, png);
   console.log(`📝 Wrote temp PNG: ${tempPNG}`);
 
-  // Encode to HLS
   await encodePNGtoHLS(tempPNG, outputDir);
 }
 
