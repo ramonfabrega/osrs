@@ -8,16 +8,9 @@ import type { ParsedStar } from "../../stars";
  * @returns PNG as Uint8Array
  */
 export async function renderStarsPNG(stars: ParsedStar[]): Promise<Uint8Array> {
-  // First, render to SVG
   const svg = await renderStarsSVG(stars);
 
-  // Convert SVG to PNG using Resvg
-  const resvg = new Resvg(svg, {
-    fitTo: {
-      mode: "width",
-      value: 1280,
-    },
-  });
+  const resvg = new Resvg(svg, { fitTo: { mode: "width", value: 1280 } });
 
   const pngData = resvg.render();
   const png = pngData.asPng();
