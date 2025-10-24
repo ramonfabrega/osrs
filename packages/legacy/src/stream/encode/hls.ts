@@ -1,4 +1,4 @@
-import type { ParsedStar } from "../../stars";
+import type { ParsedStar } from "../../stars.ts";
 import { loop } from "../../utils/index.ts";
 import { renderStarsPNG } from "../render/png.tsx";
 
@@ -103,7 +103,7 @@ async function encodePNGtoHLS(
 if (import.meta.main) loop(runCLI, 10_000);
 
 async function runCLI() {
-  const { fetchStars } = await import("../../stars");
+  const { fetchStars } = await import("../../stars.ts");
 
   console.log("🌟 Fetching live star data...");
   const { stars, meta } = await fetchStars({ limit: 12, minTier: 1 });

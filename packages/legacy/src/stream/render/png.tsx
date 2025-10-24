@@ -1,6 +1,6 @@
 import { Resvg } from "@resvg/resvg-js";
 import { renderStarsSVG } from "./svg.tsx";
-import type { ParsedStar } from "../../stars";
+import type { ParsedStar } from "../../stars.ts";
 
 /**
  * Renders star data to PNG
