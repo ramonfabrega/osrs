@@ -14,12 +14,7 @@ export async function renderStarsSVG(stars: ParsedStar[]): Promise<string> {
     width: 1280,
     height: 720,
     fonts: [
-      {
-        name: "Geist Mono",
-        data: fontData,
-        weight: 400,
-        style: "normal",
-      },
+      { name: "Geist Mono", data: fontData, weight: 400, style: "normal" },
     ],
   });
 }
