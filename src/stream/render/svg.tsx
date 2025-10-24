@@ -10,7 +10,7 @@ const fontData = await Bun.file("src/stream/fonts/Regular.ttf").arrayBuffer();
  * @returns SVG string
  */
 export async function renderStarsSVG(stars: ParsedStar[]): Promise<string> {
-  const svg = await satori(<StarTable stars={stars} />, {
+  return await satori(<StarTable stars={stars} />, {
     width: 1280,
     height: 720,
     fonts: [
@@ -22,8 +22,6 @@ export async function renderStarsSVG(stars: ParsedStar[]): Promise<string> {
       },
     ],
   });
-
-  return svg;
 }
 
 function StarTable({ stars }: { stars: ParsedStar[] }) {
