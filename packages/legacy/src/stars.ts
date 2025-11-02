@@ -126,6 +126,8 @@ const IGNORED_LOCATIONS = [
   "LOVAKENGJ__BANK",
   "ISLE_OF_SOULS_MINE",
   "UZER_MINE",
+  "ISAFDAR_MINE",
+  "ARANDAR_MINE",
 ];
 function isTargetLocation(star: Star) {
   if (typeof star.locationKey !== "string") return false;
