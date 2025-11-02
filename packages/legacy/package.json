@@ -2,7 +2,8 @@
   "name": "legacy",
   "type": "module",
   "scripts": {
-    "cli": "bun run src/cli"
+    "cli": "bun run src/cli",
+    "server": "bun run src/stream/encode/server"
   },
   "devDependencies": {
     "@types/bun": "latest",
