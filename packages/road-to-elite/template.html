@@ -100,39 +100,42 @@
   .card .sub { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); margin-top: 5px; }
   .card .sub.good { color: var(--green); }
 
-  /* ---------- meter ---------- */
-  .meter-panel {
-    background: var(--panel); border: 1px solid var(--edge); border-radius: 6px;
-    padding: 30px 28px 16px; margin-bottom: 16px;
+  /* ---------- the road at dusk ---------- */
+  .road-hero {
+    position: relative; height: clamp(340px, 42vw, 480px); margin-bottom: 12px;
+    border: 1px solid var(--edge); border-radius: 6px; overflow: hidden;
+    background: linear-gradient(180deg,
+      #0C0912 0%, #171021 18%, #2E1E29 32%, #5E3726 40%, #8A5426 45%,
+      #50300F 51%, #2A1E12 62%, #14100A 100%);
   }
-  .meter { position: relative; height: 80px; }
-  .track {
-    position: absolute; left: 0; right: 0; top: 38px; height: 12px;
-    border-radius: 6px; overflow: hidden; background: #0E0B07;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+  .road-hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .road-hero .stars {
+    position: absolute; top: 0; left: 0; width: 2px; height: 2px; border-radius: 50%;
+    background: transparent; pointer-events: none;
+    box-shadow:
+      120px 34px 0 0 rgba(234,224,200,.5), 258px 62px 0 0 rgba(234,224,200,.28),
+      342px 22px 0 0 rgba(234,224,200,.55), 448px 78px 0 0 rgba(234,224,200,.25),
+      520px 40px 0 0 rgba(234,224,200,.45), 610px 96px 0 0 rgba(234,224,200,.22),
+      686px 30px 0 0 rgba(234,224,200,.5), 758px 70px 0 0 rgba(234,224,200,.3),
+      846px 46px 0 0 rgba(234,224,200,.42), 918px 104px 0 0 rgba(234,224,200,.2),
+      986px 26px 0 0 rgba(234,224,200,.5), 1042px 66px 0 0 rgba(234,224,200,.32),
+      72px 92px 0 0 rgba(234,224,200,.24), 196px 118px 0 0 rgba(234,224,200,.2),
+      404px 128px 0 0 rgba(234,224,200,.18), 902px 140px 0 0 rgba(234,224,200,.18);
   }
-  .seg { position: absolute; top: 0; bottom: 0; }
-  .fill {
-    position: absolute; top: 38px; height: 12px; left: 0;
-    border-radius: 6px 0 0 6px;
-    background: linear-gradient(180deg, #E8C866, var(--gold) 45%, var(--gold-deep));
+  .road-labels { position: absolute; inset: 0; pointer-events: none; }
+  .rlabel {
+    position: absolute; transform: translate(-50%, -100%);
+    font-family: var(--mono); white-space: nowrap; text-align: center;
+    text-shadow: 0 1px 10px rgba(0,0,0,0.85), 0 0 3px rgba(0,0,0,0.9);
+    will-change: left, top;
   }
-  .tick { position: absolute; top: 34px; width: 1px; height: 20px; background: var(--edge); }
-  .tick.elite { background: var(--ice); width: 2px; top: 31px; height: 26px; }
-  .tick-label {
-    position: absolute; top: 60px; transform: translateX(-50%);
-    font-family: var(--mono); font-size: 10px; color: var(--ink-faint); white-space: nowrap;
-  }
-  .tick-label.elite { color: var(--ice); font-weight: 600; }
-  .tick-label.gm { transform: translateX(-100%); }
-  .marker { position: absolute; top: 10px; transform: translateX(-50%); font-family: var(--mono); font-size: 11.5px; white-space: nowrap; }
-  .marker::after { content: ""; position: absolute; left: 50%; top: 19px; width: 2px; height: 24px; transform: translateX(-50%); }
-  .marker.iron { color: var(--gold); font-weight: 600; }
-  .marker.iron::after { background: var(--gold); }
-  .marker.main { color: var(--steel); }
-  .marker.main::after { background: var(--steel); opacity: 0.6; }
-  .meter-caption { font-size: 13.5px; color: var(--ink-mute); margin-top: 12px; }
-  .meter-caption b { color: var(--ink); font-weight: 500; }
+  .rlabel .t { display: block; font-size: 11px; letter-spacing: 0.06em; font-weight: 500; }
+  .rlabel .v { display: block; font-size: 9.5px; color: var(--ink-mute); margin-top: 1px; }
+  .rlabel.you .t { color: var(--gold); font-weight: 700; font-size: 12.5px; }
+  .rlabel.you .v { color: var(--gold-deep); }
+  .rlabel.mainp .t { color: var(--steel); }
+  .road-caption { font-size: 13.5px; color: var(--ink-mute); margin: 0 0 18px; }
+  .road-caption b { color: var(--ink); font-weight: 500; }
 
   /* ---------- tier strip ---------- */
   .tier-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 44px; }
@@ -269,17 +272,13 @@
     margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--edge-soft);
     font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); line-height: 1.9;
   }
-  @media (prefers-reduced-motion: no-preference) {
-    .fill { transition: width 900ms cubic-bezier(0.22, 1, 0.36, 1); }
-  }
   @media (max-width: 640px) {
     body { padding: 26px 14px 70px; }
     .card { padding: 14px 15px 12px; }
     .card .num { font-size: 32px; }
     .card.hero .num { font-size: 38px; }
-    .meter-panel { padding: 22px 14px 10px; }
-    .tick-label.minor { display: none; }
-    .marker.main { display: none; }
+    .rlabel.minor { display: none; }
+    .rlabel .v { display: none; }
     .filters { gap: 8px; }
     input.search { width: 100%; }
     .eyebrow { font-size: 10px; letter-spacing: 0.12em; }
@@ -304,10 +303,12 @@
 
   <div class="band" id="statband"></div>
 
-  <div class="meter-panel">
-    <div class="meter" id="meter"></div>
-    <div class="meter-caption">Total Combat Achievement points, 0 &rarr; 2,672. A tier's rewards unlock when <b>total points from any tier</b> reach its threshold &mdash; ticks mark each cumulative cutoff, so Master and Grandmaster tasks push toward Elite too.</div>
+  <div class="road-hero" id="roadhero">
+    <canvas id="gl" aria-hidden="true"></canvas>
+    <div class="stars" aria-hidden="true"></div>
+    <div class="road-labels" id="roadlabels" aria-hidden="true"></div>
   </div>
+  <p class="road-caption">The road runs 0 &rarr; 2,672 Combat Achievement points. A tier's rewards unlock when <b>total points from any tier</b> pass its gate &mdash; Master and Grandmaster miles still carry you toward the Elite arch. The torch is the ironman's current position; the lantern down the road is the main's.</p>
 
   <div class="tier-grid" id="tiergrid"></div>
 
@@ -386,7 +387,6 @@ let cur = null, NEED = 0, ironPts = 0, mainPts = 0;
 document.getElementById('snapdate').textContent = DATA.generated;
 
 // ---- header renders (per player) ----
-const pct = v => (v / MAX * 100).toFixed(2) + '%';
 function renderHeader(ironByTier, mainByTier, ironDone, mainDone) {
   const p = PLAYERS[cur];
   document.getElementById('accline').innerHTML =
@@ -417,26 +417,6 @@ function renderHeader(ironByTier, mainByTier, ironDone, mainDone) {
     <div class="label">${p.main} &mdash; reference</div>
     <div class="sub">${mainDone}/${tasks.length} tasks${mTier ? ' &middot; ' + TIER_ABBR[mTier] + ' ✓' : ''}</div>
   </div>`;
-
-  const segTint = { Easy:'rgba(176,141,87,0.16)', Medium:'rgba(159,170,181,0.12)', Hard:'rgba(110,100,89,0.16)', Elite:'rgba(159,199,232,0.10)', Master:'rgba(192,88,74,0.10)', Grandmaster:'rgba(217,180,74,0.10)' };
-  let segs = '', prev = 0;
-  for (const tier of TIERS) {
-    segs += `<div class="seg" style="left:${pct(prev)};width:${(cumThresh[tier]-prev)/MAX*100}%;background:${segTint[tier]}"></div>`;
-    prev = cumThresh[tier];
-  }
-  let ticks = '';
-  for (const tier of TIERS) {
-    const isE = tier === 'Elite';
-    const minor = (tier === 'Easy' || tier === 'Medium' ? ' minor' : '') + (tier === 'Grandmaster' ? ' gm' : '');
-    ticks += `<div class="tick${isE?' elite':''}" style="left:${pct(cumThresh[tier])}"></div>
-              <div class="tick-label${isE?' elite':''}${minor}" style="left:${pct(cumThresh[tier])}">${TIER_ABBR[tier]} ${cumThresh[tier]}</div>`;
-  }
-  document.getElementById('meter').innerHTML = `
-    <div class="track">${segs}</div>
-    <div class="fill" style="width:${pct(ironPts)}"></div>
-    ${ticks}
-    <div class="marker iron" style="left:${pct(ironPts)}">${p.iron} ${ironPts}</div>
-    <div class="marker main" style="left:${pct(mainPts)}">${p.main} ${mainPts}</div>`;
 
   document.getElementById('tiergrid').innerHTML = TIERS.map(tier => `
   <div class="tier-cell">
@@ -615,6 +595,305 @@ function rowHtml(t) {
   </tr>`;
 }
 
+/* =====================================================================
+   The road at dusk — low-poly, flat-shaded WebGL1, in the étude-01 idiom:
+   CSS paints the sky, GL paints the world, fog dissolves the seam.
+   The points track IS the road: 0 pts at the camera, 2,672 at the far
+   keep. Tier gates stand at their cumulative thresholds, lamped in their
+   crest metal; the ironman's torch and the main's lantern sit at their
+   current points. All text is DOM, projected from world space per frame.
+   ===================================================================== */
+const Road = (() => {
+  const canvas = document.getElementById('gl');
+  const hero = document.getElementById('roadhero');
+  const labelLayer = document.getElementById('roadlabels');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const gl = canvas.getContext('webgl', { antialias: true, alpha: true, premultipliedAlpha: false, powerPreference: 'low-power' });
+  if (!gl) { hero.style.display = 'none'; document.querySelector('.road-caption').style.display = 'none'; return { update() {} }; }
+
+  /* ---------- tiny math (étude 01) ---------- */
+  const mat4 = {
+    perspective(fov, aspect, near, far) {
+      const f = 1 / Math.tan(fov / 2), nf = 1 / (near - far);
+      return new Float32Array([f / aspect,0,0,0, 0,f,0,0, 0,0,(far+near)*nf,-1, 0,0,2*far*near*nf,0]);
+    },
+    lookAt(e, c, u) {
+      let zx=e[0]-c[0], zy=e[1]-c[1], zz=e[2]-c[2]; let l=Math.hypot(zx,zy,zz); zx/=l; zy/=l; zz/=l;
+      let xx=u[1]*zz-u[2]*zy, xy=u[2]*zx-u[0]*zz, xz=u[0]*zy-u[1]*zx; l=Math.hypot(xx,xy,xz); xx/=l; xy/=l; xz/=l;
+      const yx=zy*xz-zz*xy, yy=zz*xx-zx*xz, yz=zx*xy-zy*xx;
+      return new Float32Array([xx,yx,zx,0, xy,yy,zy,0, xz,yz,zz,0,
+        -(xx*e[0]+xy*e[1]+xz*e[2]), -(yx*e[0]+yy*e[1]+yz*e[2]), -(zx*e[0]+zy*e[1]+zz*e[2]), 1]);
+    },
+    mul(a, b) {
+      const o = new Float32Array(16);
+      for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++)
+        o[j*4+i] = a[i]*b[j*4] + a[4+i]*b[j*4+1] + a[8+i]*b[j*4+2] + a[12+i]*b[j*4+3];
+      return o;
+    }
+  };
+  const hash = (x, z) => { const s = Math.sin(x * 127.1 + z * 311.7) * 43758.5453; return s - Math.floor(s); };
+  const smooth = t => t * t * (3 - 2 * t);
+  function vnoise(x, z) {
+    const xi = Math.floor(x), zi = Math.floor(z), xf = smooth(x - xi), zf = smooth(z - zi);
+    const a = hash(xi, zi), b = hash(xi + 1, zi), c = hash(xi, zi + 1), d = hash(xi + 1, zi + 1);
+    return a + (b - a) * xf + (c - a) * zf + (a - b - c + d) * xf * zf;
+  }
+  function fbm(x, z) { let v = 0, a = .5, f = 1; for (let i = 0; i < 5; i++) { v += a * vnoise(x * f, z * f); a *= .5; f *= 2.03; } return v; }
+  const sstep = (a, b, t) => { t = Math.min(1, Math.max(0, (t - a) / (b - a))); return t * t * (3 - 2 * t); };
+  const mix = (a, b, t) => a + (b - a) * t;
+  const mix3 = (a, b, t) => [mix(a[0],b[0],t), mix(a[1],b[1],t), mix(a[2],b[2],t)];
+
+  /* ---------- the world ---------- */
+  const roadX = z => Math.sin(z * 0.045) * 4.5 + Math.sin(z * 0.011 + 2) * 3;
+  const zOf = f => 10 + f * 122;                             // points → distance; offset keeps gate one out of the lens
+  function terrainH(x, z) {
+    const dr = Math.abs(x - roadX(z));
+    let h = fbm(x * 0.05 + 7, z * 0.05) * 6.0 - 1.6;
+    h += sstep(8, 42, dr) * 2.4;                             // valley walls rise away from the road
+    return mix(0.12, h, sstep(2.6, 8.5, dr));                // flat road bed
+  }
+
+  const TIER_RGB = {
+    Easy: [0.69,0.55,0.34], Medium: [0.66,0.71,0.76], Hard: [0.42,0.39,0.36],
+    Elite: [0.62,0.78,0.91], Master: [0.75,0.35,0.29], Grandmaster: [0.85,0.71,0.29],
+  };
+  const stone = [0.30,0.27,0.25], stoneD = [0.24,0.215,0.20], wood = [0.23,0.155,0.09];
+  const amber = [1.0,0.66,0.24], lanternC = [0.80,0.85,0.95];
+
+  // geometry sinks — kind: 0 land, 2 emissive, 3 flickering emissive
+  let pos, nrm, col, kind;
+  function tri(a, b, c, color, k = 0) {
+    const ux=b[0]-a[0], uy=b[1]-a[1], uz=b[2]-a[2], vx=c[0]-a[0], vy=c[1]-a[1], vz=c[2]-a[2];
+    let nx=uy*vz-uz*vy, ny=uz*vx-ux*vz, nz=ux*vy-uy*vx; const l=Math.hypot(nx,ny,nz)||1; nx/=l; ny/=l; nz/=l;
+    for (const p of [a, b, c]) { pos.push(p[0],p[1],p[2]); nrm.push(nx,ny,nz); col.push(color[0],color[1],color[2]); kind.push(k); }
+  }
+  function quad(a, b, c, d, color, k = 0) { tri(a, b, c, color, k); tri(a, c, d, color, k); }
+  function box(cx, y0, cz, w, h, d, color, k = 0) {
+    const x0=cx-w/2, x1=cx+w/2, z0=cz-d/2, z1=cz+d/2, y1=y0+h;
+    quad([x0,y1,z0],[x0,y1,z1],[x1,y1,z1],[x1,y1,z0], color, k);
+    quad([x0,y0,z1],[x0,y1,z1],[x0,y1,z0],[x0,y0,z0], color, k);
+    quad([x1,y0,z0],[x1,y1,z0],[x1,y1,z1],[x1,y0,z1], color, k);
+    quad([x0,y0,z0],[x0,y1,z0],[x1,y1,z0],[x1,y0,z0], color, k);
+    quad([x1,y0,z1],[x1,y1,z1],[x0,y1,z1],[x0,y0,z1], color, k);
+  }
+  function cone(cx, y0, cz, r, h, color, sides = 6) {
+    for (let i = 0; i < sides; i++) {
+      const a0 = i/sides*Math.PI*2, a1 = (i+1)/sides*Math.PI*2;
+      tri([cx+Math.cos(a0)*r, y0, cz+Math.sin(a0)*r], [cx, y0+h, cz], [cx+Math.cos(a1)*r, y0, cz+Math.sin(a1)*r], color);
+    }
+  }
+
+  function landColor(h, slope, x, z) {
+    const grassA = [0.095,0.125,0.070], grassB = [0.060,0.088,0.052], rock = [0.155,0.135,0.125];
+    const dirt = [0.315,0.230,0.125], shoulder = [0.215,0.165,0.100];
+    let c = mix3(grassB, grassA, sstep(-1.0, 3.0, h));
+    c = mix3(c, rock, sstep(0.55, 0.9, slope));
+    const dr = Math.abs(x - roadX(z));
+    c = mix3(dirt, c, sstep(1.9, 2.6, dr));                  // the road itself
+    const shoulderT = sstep(2.0, 2.7, dr) * (1 - sstep(2.9, 4.6, dr));
+    c = mix3(c, shoulder, shoulderT * 0.8);                  // worn verge either side
+    const tint = 0.90 + 0.20 * (hash(Math.floor(x*.7), Math.floor(z*.7)) - .5);
+    return [c[0]*tint, c[1]*tint, c[2]*tint];
+  }
+
+  function buildScene(ironF, mainF) {
+    pos = []; nrm = []; col = []; kind = [];
+
+    // terrain
+    const X0 = -80, X1 = 80, Z0 = -30, Z1 = 176, step = 2.2;
+    const NX = Math.round((X1-X0)/step), NZ = Math.round((Z1-Z0)/step);
+    const H = [];
+    for (let i = 0; i <= NX; i++) { H[i] = []; for (let j = 0; j <= NZ; j++) H[i][j] = terrainH(X0+i*step, Z0+j*step); }
+    for (let i = 0; i < NX; i++) for (let j = 0; j < NZ; j++) {
+      const x0 = X0+i*step, z0 = Z0+j*step, x1 = x0+step, z1 = z0+step;
+      const a=[x0,H[i][j],z0], b=[x1,H[i+1][j],z0], c=[x1,H[i+1][j+1],z1], d=[x0,H[i][j+1],z1];
+      const hm=(a[1]+b[1]+c[1]+d[1])/4, slope=Math.min(1,(Math.abs(a[1]-c[1])+Math.abs(b[1]-d[1]))/(step*1.6));
+      const color = landColor(hm, slope, (x0+x1)/2, (z0+z1)/2);
+      if ((i+j)&1) { tri(a,d,b,color); tri(b,d,c,color); } else { tri(a,d,c,color); tri(a,c,b,color); }
+    }
+
+    // tier gates at their cumulative thresholds
+    for (const tier of TIERS) {
+      const gz = zOf(cumThresh[tier] / MAX), gx = roadX(gz);
+      const elite = tier === 'Elite';
+      const ph = elite ? 6.2 : 4.2, pw = elite ? 1.35 : 1.05;
+      for (const s of [-1, 1]) {
+        const px = gx + s * (elite ? 3.6 : 3.1), py = terrainH(px, gz) - 0.3;
+        box(px, py, gz, pw, ph, pw, stone);
+        box(px, py + ph, gz, pw + 0.45, 0.45, pw + 0.45, stoneD);
+        box(px, py + ph + 0.55, gz, 0.6, 0.6, 0.6, TIER_RGB[tier], 2);
+      }
+      if (elite) {
+        const ly = terrainH(gx, gz) - 0.3 + ph + 0.45;
+        box(gx, ly, gz, 8.6, 0.8, 1.2, stoneD);
+        box(gx, ly + 0.8, gz, 0.7, 0.7, 0.7, TIER_RGB.Elite, 2);
+      }
+    }
+
+    // the ironman's torch (flickering) and the main's lantern
+    {
+      const tz = zOf(ironF), tx = roadX(tz) + 2.35, ty = terrainH(tx, tz) - 0.15;
+      box(tx, ty, tz, 0.30, 2.7, 0.30, wood);
+      box(tx, ty + 2.7, tz, 0.55, 0.72, 0.55, amber, 3);
+    }
+    {
+      const lz = zOf(mainF), lx = roadX(lz) - 2.35, ly = terrainH(lx, lz) - 0.15;
+      box(lx, ly, lz, 0.26, 2.5, 0.26, wood);
+      box(lx, ly + 2.5, lz, 0.48, 0.55, 0.48, lanternC, 2);
+    }
+
+    // the far keep — where the road ends
+    {
+      const kz = 160, kx = roadX(kz), ky = terrainH(kx, kz);
+      box(kx, ky, kz, 7, 8, 7, stoneD);
+      box(kx - 4.4, ky, kz, 2.6, 10.5, 2.6, stone); box(kx + 4.4, ky, kz, 2.6, 10.5, 2.6, stone);
+      box(kx - 1.4, ky + 4.4, kz - 3.6, 0.7, 1.1, 0.15, amber, 2);
+      box(kx + 1.6, ky + 5.6, kz - 3.6, 0.7, 1.1, 0.15, amber, 2);
+    }
+
+    // trees, clear of the road and of the near foreground
+    const leafA = [0.050,0.095,0.055], leafB = [0.066,0.105,0.048];
+    let planted = 0;
+    for (let t = 0; t < 500 && planted < 52; t++) {
+      const x = X0 + hash(t, 1) * (X1 - X0), z = 14 + hash(t, 2) * (Z1 - 34);
+      if (Math.abs(x - roadX(z)) < 9) continue;
+      const h = terrainH(x, z);
+      const s = 0.55 + hash(t, 3) * 0.65, leaf = hash(t, 4) > 0.5 ? leafA : leafB;
+      box(x, h - 0.2, z, 0.5*s, 1.4*s, 0.5*s, wood);
+      cone(x, h + 1.0*s, z, 1.7*s, 3.2*s, leaf, 6);
+      cone(x, h + 2.6*s, z, 1.2*s, 2.6*s, leaf, 6);
+      planted++;
+    }
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufs.pos); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pos), gl.DYNAMIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufs.nrm); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(nrm), gl.DYNAMIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufs.col); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(col), gl.DYNAMIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufs.kind); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(kind), gl.DYNAMIC_DRAW);
+    count = pos.length / 3;
+  }
+
+  /* ---------- GL ---------- */
+  const VS = `
+    attribute vec3 aPos; attribute vec3 aNrm; attribute vec3 aCol; attribute float aKind;
+    uniform mat4 uMVP; uniform vec3 uEye;
+    varying vec3 vCol; varying float vFog; varying float vKind; varying float vLight;
+    const vec3 L = normalize(vec3(-0.45, 0.30, -0.55));
+    void main(){
+      float d = distance(aPos, uEye);
+      vFog = 1.0 - exp(-d * d * 0.00006);
+      vLight = max(dot(aNrm, L), 0.0);
+      vCol = aCol; vKind = aKind;
+      gl_Position = uMVP * vec4(aPos, 1.0);
+    }`;
+  const FS = `
+    precision mediump float;
+    varying vec3 vCol; varying float vFog; varying float vKind; varying float vLight;
+    uniform vec3 uFog; uniform float uT;
+    void main(){
+      vec3 sun = vec3(1.0, 0.60, 0.36) * 0.9;
+      vec3 amb = vec3(0.34, 0.29, 0.42) * 0.5;
+      vec3 c = vCol * (amb + sun * vLight);
+      if (vKind > 2.5) c = vCol * (1.30 + 0.28 * sin(uT * 6.7) + 0.12 * sin(uT * 17.3));
+      else if (vKind > 1.5) c = vCol * 1.28;
+      c = mix(c, uFog, vFog);
+      gl_FragColor = vec4(c, 1.0);
+    }`;
+  function shader(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s; }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, shader(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, FS));
+  gl.linkProgram(prog); gl.useProgram(prog);
+  const bufs = { pos: gl.createBuffer(), nrm: gl.createBuffer(), col: gl.createBuffer(), kind: gl.createBuffer() };
+  let count = 0;
+  function bindAttrib(name, buf, size) {
+    const loc = gl.getAttribLocation(prog, name);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0);
+  }
+  const uMVP = gl.getUniformLocation(prog, 'uMVP'), uEye = gl.getUniformLocation(prog, 'uEye'),
+        uFog = gl.getUniformLocation(prog, 'uFog'), uT = gl.getUniformLocation(prog, 'uT');
+  gl.uniform3f(uFog, 0.47, 0.29, 0.15);              /* the CSS horizon amber, so the far road dissolves into dusk */
+  gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK); gl.clearColor(0, 0, 0, 0);
+
+  /* ---------- labels, projected from world space ---------- */
+  let labels = [];
+  function buildLabels(ironF, mainF, p) {
+    labels = [];
+    const above = { Easy: 6.4, Medium: 7.4, Hard: 6.6, Elite: 10.2, Master: 7.4, Grandmaster: 11.2 };
+    for (const tier of TIERS) {
+      const f = cumThresh[tier] / MAX, gz = zOf(f), gx = roadX(gz);
+      const minor = tier === 'Easy' || tier === 'Medium';
+      labels.push({
+        x: gx, z: gz, above: above[tier],
+        cls: 'rlabel ' + tclass(tier) + (minor ? ' minor' : ''),
+        html: `<span class="t">${TIER_ABBR[tier]}</span><span class="v">${cumThresh[tier]}</span>`,
+      });
+    }
+    const tz = zOf(ironF);
+    labels.push({ x: roadX(tz) + 2.35, z: tz, above: 5.0, cls: 'rlabel you',
+      html: `<span class="t">${p.iron}</span><span class="v">${ironPts} pts</span>` });
+    const lz = zOf(mainF);
+    labels.push({ x: roadX(lz) - 2.35, z: lz, above: 4.6, cls: 'rlabel mainp',
+      html: `<span class="t">${p.main}</span><span class="v">${mainPts} pts</span>` });
+    labelLayer.innerHTML = labels.map((l, i) => `<div class="${l.cls}" id="rl${i}">${l.html}</div>`).join('');
+    for (let i = 0; i < labels.length; i++) labels[i].el = document.getElementById('rl' + i);
+  }
+  function placeLabels(mvp) {
+    const W = hero.clientWidth, Hh = hero.clientHeight;
+    for (const l of labels) {
+      const y = terrainH(l.x, l.z) + l.above;
+      const cx = mvp[0]*l.x + mvp[4]*y + mvp[8]*l.z + mvp[12];
+      const cy = mvp[1]*l.x + mvp[5]*y + mvp[9]*l.z + mvp[13];
+      const cw = mvp[3]*l.x + mvp[7]*y + mvp[11]*l.z + mvp[15];
+      if (cw < 0.5) { l.el.style.display = 'none'; continue; }
+      l.el.style.display = '';
+      const sx = (cx/cw*0.5+0.5) * W, sy = (1-(cy/cw*0.5+0.5)) * Hh;
+      const s = Math.max(0.62, Math.min(1.15, 26 / cw));
+      l.el.style.left = sx + 'px'; l.el.style.top = sy + 'px';
+      l.el.style.transform = `translate(-50%,-100%) scale(${s.toFixed(3)})`;
+      l.el.style.opacity = Math.max(0.55, Math.min(1, 48 / cw)).toFixed(2);
+    }
+  }
+
+  /* ---------- frame ---------- */
+  let w = 0, h = 0;
+  function resize() {
+    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+    const cw = Math.round(canvas.clientWidth * dpr), ch = Math.round(canvas.clientHeight * dpr);
+    if (cw === w && ch === h) return; w = cw; h = ch; canvas.width = w; canvas.height = h; gl.viewport(0, 0, w, h);
+  }
+  const t0 = performance.now();
+  function draw(now) {
+    resize();
+    const t = reduced ? 30 : (now - t0) / 1000;
+    const eye = [-33 + Math.sin(t * 0.07) * 0.9, 14 + Math.sin(t * 0.11) * 0.35, -11];
+    const center = [11, -1.6, 77];
+    const proj = mat4.perspective(0.66, w / h, 1, 460), view = mat4.lookAt(eye, center, [0, 1, 0]);
+    const mvp = mat4.mul(proj, view);
+    gl.uniformMatrix4fv(uMVP, false, mvp);
+    gl.uniform1f(uT, t); gl.uniform3f(uEye, eye[0], eye[1], eye[2]);
+    bindAttrib('aPos', bufs.pos, 3); bindAttrib('aNrm', bufs.nrm, 3); bindAttrib('aCol', bufs.col, 3); bindAttrib('aKind', bufs.kind, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, count);
+    placeLabels(mvp);
+  }
+  let raf = 0;
+  const wantsFrames = () => !document.hidden && scrollY < hero.offsetTop + hero.offsetHeight + 300 && !reduced;
+  function loop(now) { raf = 0; draw(now); if (wantsFrames()) raf = requestAnimationFrame(loop); }
+  function kick() { if (!raf && wantsFrames()) raf = requestAnimationFrame(loop); }
+  addEventListener('resize', () => { resize(); requestAnimationFrame(draw); });
+  addEventListener('scroll', kick, { passive: true });
+  document.addEventListener('visibilitychange', kick);
+
+  return {
+    update() {
+      const p = PLAYERS[cur];
+      buildScene(ironPts / MAX, mainPts / MAX);
+      buildLabels(ironPts / MAX, mainPts / MAX, p);
+      draw(performance.now());
+      kick();
+    }
+  };
+})();
+
 // ---- player toggle + init ----
 document.getElementById('playerctl').innerHTML = Object.entries(PLAYERS)
   .map(([k, p]) => `<button data-p="${k}">${p.label}</button>`).join('');
@@ -639,6 +918,7 @@ function applyPlayer(key) {
   NEED = ELITE - ironPts;
   document.querySelectorAll('#playerctl button').forEach(x => x.classList.toggle('on', x.dataset.p === cur));
   renderHeader(ironByTier, mainByTier, ironDone, mainDone);
+  Road.update();
   buildBossChips();
   render();
 }
