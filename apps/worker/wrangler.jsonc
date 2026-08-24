@@ -1,5 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  // Workers Builds: root directory is apps/worker (dashboard build config).
   "name": "osrs",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-01",
@@ -9,7 +10,15 @@
   // (same shape as dotfiles/cdn cdn-explorer).
   "routes": [{ "pattern": "osrs.ramonfabrega.com", "custom_domain": true }],
 
+  // Branch pushes (Workers Builds runs `versions upload` off non-master) get a
+  // preview URL at <version>-osrs.<subdomain>.workers.dev — off by default once
+  // a custom domain takes the workers.dev route, so opt back in (same as cdn).
+  "preview_urls": true,
+
   // Pages are authored as complete static HTML with a __DATA__ marker; the
   // worker bundles them as text and injects fresh data at request time.
-  "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }]
+  "rules": [
+    { "type": "Text", "globs": ["**/*.html"], "fallthrough": true },
+    { "type": "Data", "globs": ["**/*.png"], "fallthrough": true }
+  ]
 }

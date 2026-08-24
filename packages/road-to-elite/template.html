@@ -4,6 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Road to Elite</title>
+<meta name="description" content="OSRS Combat Achievements tracker — the ironmen's road to Elite, mains as reference. Live from WikiSync.">
+<meta name="theme-color" content="#14100A">
+<meta property="og:title" content="Road to Elite">
+<meta property="og:description" content="OSRS Combat Achievements tracker — the ironmen's road to Elite, mains as reference. Live from WikiSync.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://osrs.ramonfabrega.com/road-to-elite">
+<meta property="og:image" content="https://osrs.ramonfabrega.com/road-to-elite/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2314100A'/%3E%3Crect x='9' y='9' width='14' height='14' rx='2.5' transform='rotate(45 16 16)' fill='%23D9B44A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -115,6 +124,7 @@
     font-family: var(--mono); font-size: 10px; color: var(--ink-faint); white-space: nowrap;
   }
   .tick-label.elite { color: var(--ice); font-weight: 600; }
+  .tick-label.gm { transform: translateX(-100%); }
   .marker { position: absolute; top: 10px; transform: translateX(-50%); font-family: var(--mono); font-size: 11.5px; white-space: nowrap; }
   .marker::after { content: ""; position: absolute; left: 50%; top: 19px; width: 2px; height: 24px; transform: translateX(-50%); }
   .marker.iron { color: var(--gold); font-weight: 600; }
@@ -262,6 +272,21 @@
   @media (prefers-reduced-motion: no-preference) {
     .fill { transition: width 900ms cubic-bezier(0.22, 1, 0.36, 1); }
   }
+  @media (max-width: 640px) {
+    body { padding: 26px 14px 70px; }
+    .card { padding: 14px 15px 12px; }
+    .card .num { font-size: 32px; }
+    .card.hero .num { font-size: 38px; }
+    .meter-panel { padding: 22px 14px 10px; }
+    .tick-label.minor { display: none; }
+    .marker.main { display: none; }
+    .filters { gap: 8px; }
+    input.search { width: 100%; }
+    .eyebrow { font-size: 10px; letter-spacing: 0.12em; }
+  }
+  @media (max-width: 480px) {
+    .band { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -402,8 +427,9 @@ function renderHeader(ironByTier, mainByTier, ironDone, mainDone) {
   let ticks = '';
   for (const tier of TIERS) {
     const isE = tier === 'Elite';
+    const minor = (tier === 'Easy' || tier === 'Medium' ? ' minor' : '') + (tier === 'Grandmaster' ? ' gm' : '');
     ticks += `<div class="tick${isE?' elite':''}" style="left:${pct(cumThresh[tier])}"></div>
-              <div class="tick-label${isE?' elite':''}" style="left:${pct(cumThresh[tier])}">${TIER_ABBR[tier]} ${cumThresh[tier]}</div>`;
+              <div class="tick-label${isE?' elite':''}${minor}" style="left:${pct(cumThresh[tier])}">${TIER_ABBR[tier]} ${cumThresh[tier]}</div>`;
   }
   document.getElementById('meter').innerHTML = `
     <div class="track">${segs}</div>

@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import ogImage from "../../../packages/road-to-elite/og.png";
 import roadToElite from "../../../packages/road-to-elite/template.html";
 import { liveData } from "./data";
 
@@ -12,6 +13,13 @@ app.get("/road-to-elite", async (c) => {
   const html = roadToElite.replace("__DATA__", JSON.stringify(data));
   return c.html(html, 200, { "cache-control": "public, max-age=60" });
 });
+
+app.get("/road-to-elite/og.png", (c) =>
+  c.body(ogImage, 200, {
+    "content-type": "image/png",
+    "cache-control": "public, max-age=86400",
+  }),
+);
 
 // Server-side WikiSync proxy for future pages / client-side refresh —
 // browsers can't reach sync.runescape.wiki themselves (Origin allowlist).
