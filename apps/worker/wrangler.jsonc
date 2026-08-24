@@ -21,3 +21,5 @@
     { "type": "Data", "globs": ["**/*.png"], "fallthrough": true }
   ]
 }
+
+// build-config: root directory apps/worker (set in Workers Builds dashboard)
