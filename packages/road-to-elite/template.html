@@ -100,50 +100,90 @@
   .card .sub { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); margin-top: 5px; }
   .card .sub.good { color: var(--green); }
 
-  /* ---------- meter ---------- */
+  /* ---------- the rail ---------- */
   .meter-panel {
     background: var(--panel); border: 1px solid var(--edge); border-radius: 6px;
-    padding: 30px 28px 16px; margin-bottom: 16px;
+    padding: 26px 26px 14px; margin-bottom: 44px;
   }
-  .meter { position: relative; height: 80px; }
+  .meter { position: relative; height: 100px; }
   .track {
-    position: absolute; left: 0; right: 0; top: 38px; height: 12px;
-    border-radius: 6px; overflow: hidden; background: #0E0B07;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+    position: absolute; left: 0; right: 0; top: 42px; height: 20px;
+    border-radius: 4px; overflow: hidden; background: #0E0B07;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.65);
   }
-  .seg { position: absolute; top: 0; bottom: 0; }
+  .seg { position: absolute; top: 0; bottom: 0; cursor: pointer; transition: filter 140ms, box-shadow 140ms; }
+  .seg:hover { filter: brightness(1.7); }
+  .seg.sel { filter: brightness(1.9); box-shadow: inset 0 -3px 0 rgba(234,224,200,0.55); }
   .fill {
-    position: absolute; top: 38px; height: 12px; left: 0;
-    border-radius: 6px 0 0 6px;
-    background: linear-gradient(180deg, #E8C866, var(--gold) 45%, var(--gold-deep));
+    position: absolute; top: 42px; height: 20px; left: 0; pointer-events: none;
+    border-radius: 4px 0 0 4px;
+    background: linear-gradient(180deg, #F0D078, var(--gold) 45%, var(--gold-deep));
+    box-shadow: 0 0 16px rgba(217,180,74,0.35);
+    mix-blend-mode: screen; opacity: 0.92;
   }
-  .tick { position: absolute; top: 34px; width: 1px; height: 20px; background: var(--edge); }
-  .tick.elite { background: var(--ice); width: 2px; top: 31px; height: 26px; }
+  .tick { position: absolute; top: 38px; width: 1.5px; height: 28px; background: #4A3C24; pointer-events: none; }
+  .tick.elite { background: var(--ice); width: 2.5px; top: 34px; height: 34px; box-shadow: 0 0 8px rgba(159,199,232,0.5); }
   .tick-label {
-    position: absolute; top: 60px; transform: translateX(-50%);
-    font-family: var(--mono); font-size: 10px; color: var(--ink-faint); white-space: nowrap;
+    position: absolute; top: 72px; transform: translateX(-50%); cursor: pointer;
+    font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); white-space: nowrap;
   }
   .tick-label.elite { color: var(--ice); font-weight: 600; }
   .tick-label.gm { transform: translateX(-100%); }
-  .marker { position: absolute; top: 10px; transform: translateX(-50%); font-family: var(--mono); font-size: 11.5px; white-space: nowrap; }
-  .marker::after { content: ""; position: absolute; left: 50%; top: 19px; width: 2px; height: 24px; transform: translateX(-50%); }
-  .marker.iron { color: var(--gold); font-weight: 600; }
-  .marker.iron::after { background: var(--gold); }
+  .marker { position: absolute; top: 12px; transform: translateX(-50%); font-family: var(--mono); font-size: 11.5px; white-space: nowrap; pointer-events: none; }
+  .marker::after { content: ""; position: absolute; left: 50%; top: 18px; width: 8px; height: 8px; transform: translateX(-50%) rotate(45deg); }
+  .marker.iron { color: var(--gold); font-weight: 700; }
+  .marker.iron::after { background: var(--gold); box-shadow: 0 0 10px rgba(217,180,74,0.8); }
   .marker.main { color: var(--steel); }
-  .marker.main::after { background: var(--steel); opacity: 0.6; }
-  .meter-caption { font-size: 13.5px; color: var(--ink-mute); margin-top: 12px; }
-  .meter-caption b { color: var(--ink); font-weight: 500; }
-
-  /* ---------- tier strip ---------- */
-  .tier-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 44px; }
-  @media (max-width: 900px) { .tier-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 560px) { .tier-grid { grid-template-columns: repeat(2, 1fr); } }
-  .tier-cell { background: var(--panel); border: 1px solid var(--edge-soft); border-radius: 6px; padding: 13px 15px; }
-  .tier-cell .nums { font-family: var(--mono); font-size: 13px; color: var(--ink); margin: 9px 0 7px; font-variant-numeric: tabular-nums; }
-  .tier-cell .nums small { color: var(--ink-faint); font-size: 10.5px; }
+  .marker.main::after { background: var(--steel); opacity: 0.7; width: 6px; height: 6px; top: 20px; }
+  .tier-detail {
+    font-family: var(--mono); font-size: 12px; color: var(--ink-mute);
+    margin-top: 10px; min-height: 18px;
+  }
+  .tier-detail b { color: var(--ink); font-weight: 600; }
+  .tier-detail .dim { color: var(--ink-faint); }
   .minibar { height: 4px; border-radius: 2px; background: #0E0B07; overflow: hidden; }
   .minibar span { display: block; height: 100%; background: var(--green); border-radius: 2px; }
-  .tier-cell .mainrow { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); margin-top: 7px; }
+
+  /* ---------- boss cards ---------- */
+  .boss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+  .bcard {
+    background: var(--panel); border: 1px solid var(--edge); border-radius: 6px;
+    padding: 14px 16px 12px; cursor: pointer; outline: none;
+    transition: border-color 140ms, transform 140ms;
+  }
+  .bcard:hover, .bcard:focus-visible { border-color: var(--gold-deep); transform: translateY(-1px); }
+  .bcard.open { grid-column: 1 / -1; cursor: default; transform: none; border-color: var(--gold-deep); }
+  .bctop { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .bcard .bname { font-weight: 700; color: var(--ink); font-size: 15px; }
+  .bcard .bpts { font-family: var(--mono); font-size: 13px; color: var(--gold); font-weight: 600; white-space: nowrap; }
+  .bcline { display: flex; flex-wrap: wrap; gap: 8px; font-family: var(--mono); font-size: 10.5px; margin: 7px 0 9px; min-height: 15px; }
+  .bcmeta { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); margin-top: 8px; }
+  .btasks { margin-top: 12px; border-top: 1px solid var(--edge-soft); padding-top: 4px; cursor: auto; }
+  .btask {
+    display: grid; grid-template-columns: 74px 1fr 46px 52px 44px; gap: 12px;
+    align-items: baseline; padding: 9px 2px; border-bottom: 1px solid var(--edge-soft);
+    font-size: 13.5px;
+  }
+  .btask:last-child { border-bottom: none; }
+  .btask.done-t { opacity: 0.55; }
+  .btask .btname { font-weight: 600; color: var(--ink); }
+  .btask .btdesc { font-size: 12.5px; color: var(--ink-mute); line-height: 1.4; }
+  .btask .btpts, .btask .btcomp { font-family: var(--mono); font-size: 12px; color: var(--ink-mute); text-align: right; font-variant-numeric: tabular-nums; }
+  .btask .btchecks { font-size: 12px; text-align: right; white-space: nowrap; }
+
+  /* ---------- app feel ---------- */
+  .fadein { animation: fadeUp 220ms ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .fadein { animation: none; } .fill { transition: none !important; } }
+  .kbd-hints {
+    font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint);
+    margin: 10px 0 0; letter-spacing: 0.03em;
+  }
+  .kbd-hints kbd {
+    font-family: var(--mono); font-size: 10px; color: var(--ink-mute);
+    background: var(--panel-2); border: 1px solid var(--edge); border-radius: 3px;
+    padding: 0 5px; margin: 0 1px;
+  }
 
   /* ---------- tier chips (CA crest metals) ---------- */
   .pill {
@@ -283,6 +323,9 @@
     .filters { gap: 8px; }
     input.search { width: 100%; }
     .eyebrow { font-size: 10px; letter-spacing: 0.12em; }
+    .kbd-hints { display: none; }
+    .btask { grid-template-columns: 64px 1fr 40px; }
+    .btask .btcomp, .btask .btchecks { display: none; }
   }
   @media (max-width: 480px) {
     .band { grid-template-columns: 1fr; }
@@ -306,10 +349,8 @@
 
   <div class="meter-panel">
     <div class="meter" id="meter"></div>
-    <div class="meter-caption">Total Combat Achievement points, 0 &rarr; 2,672. A tier's rewards unlock when <b>total points from any tier</b> reach its threshold &mdash; ticks mark each cumulative cutoff, so Master and Grandmaster tasks push toward Elite too.</div>
+    <div class="tier-detail" id="tierdetail"></div>
   </div>
-
-  <div class="tier-grid" id="tiergrid"></div>
 
   <h2>The task list</h2>
   <p class="section-sub">Default view: everything <span class="acct" id="subiron"></span> hasn't done, easiest first by the wiki's crowdsourced completion rate. The gold line marks where Elite unlocks under the current sort.</p>
@@ -332,7 +373,9 @@
 
   <div class="countline" id="countline"></div>
 
-  <div class="table-wrap">
+  <div class="boss-grid" id="bossgrid" hidden></div>
+
+  <div class="table-wrap" id="tablewrap">
     <table>
       <thead>
         <tr>
@@ -349,6 +392,8 @@
       <tbody id="tbody"></tbody>
     </table>
   </div>
+
+  <p class="kbd-hints"><kbd>←</kbd><kbd>→</kbd> tier &middot; <kbd>t</kbd> tasks &middot; <kbd>b</kbd> bosses &middot; <kbd>/</kbd> search &middot; <kbd>1</kbd><kbd>2</kbd> player &middot; <kbd>esc</kbd> clear</p>
 
   <footer>
     sources: OSRS Wiki Bucket API (task list) &middot; Module:Combat Achievements/completion.json (comp%) &middot; WikiSync via RuneLite (per-account progress)<br>
@@ -418,10 +463,18 @@ function renderHeader(ironByTier, mainByTier, ironDone, mainDone) {
     <div class="sub">${mainDone}/${tasks.length} tasks${mTier ? ' &middot; ' + TIER_ABBR[mTier] + ' ✓' : ''}</div>
   </div>`;
 
-  const segTint = { Easy:'rgba(176,141,87,0.16)', Medium:'rgba(159,170,181,0.12)', Hard:'rgba(110,100,89,0.16)', Elite:'rgba(159,199,232,0.10)', Master:'rgba(192,88,74,0.10)', Grandmaster:'rgba(217,180,74,0.10)' };
+  TT = { ironByTier, mainByTier };
+  renderMeter();
+}
+
+// ---- the rail: true-scale meter, clickable tier segments ----
+let TT = null;
+const segTint = { Easy:'rgba(176,141,87,0.30)', Medium:'rgba(159,170,181,0.22)', Hard:'rgba(110,100,89,0.34)', Elite:'rgba(159,199,232,0.20)', Master:'rgba(192,88,74,0.22)', Grandmaster:'rgba(217,180,74,0.20)' };
+function renderMeter() {
+  const p = PLAYERS[cur];
   let segs = '', prev = 0;
   for (const tier of TIERS) {
-    segs += `<div class="seg" style="left:${pct(prev)};width:${(cumThresh[tier]-prev)/MAX*100}%;background:${segTint[tier]}"></div>`;
+    segs += `<div class="seg${state.sel === tier ? ' sel' : ''}" data-tier="${tier}" style="left:${pct(prev)};width:${(cumThresh[tier]-prev)/MAX*100}%;background:${segTint[tier]}"></div>`;
     prev = cumThresh[tier];
   }
   let ticks = '';
@@ -429,7 +482,7 @@ function renderHeader(ironByTier, mainByTier, ironDone, mainDone) {
     const isE = tier === 'Elite';
     const minor = (tier === 'Easy' || tier === 'Medium' ? ' minor' : '') + (tier === 'Grandmaster' ? ' gm' : '');
     ticks += `<div class="tick${isE?' elite':''}" style="left:${pct(cumThresh[tier])}"></div>
-              <div class="tick-label${isE?' elite':''}${minor}" style="left:${pct(cumThresh[tier])}">${TIER_ABBR[tier]} ${cumThresh[tier]}</div>`;
+              <div class="tick-label${isE?' elite':''}${minor}" data-tier="${tier}" style="left:${pct(cumThresh[tier])}">${TIER_ABBR[tier]} ${cumThresh[tier]}</div>`;
   }
   document.getElementById('meter').innerHTML = `
     <div class="track">${segs}</div>
@@ -437,14 +490,45 @@ function renderHeader(ironByTier, mainByTier, ironDone, mainDone) {
     ${ticks}
     <div class="marker iron" style="left:${pct(ironPts)}">${p.iron} ${ironPts}</div>
     <div class="marker main" style="left:${pct(mainPts)}">${p.main} ${mainPts}</div>`;
+  tierDetail();
+}
+function tierDetail(hover) {
+  const tier = hover || state.sel;
+  const el = document.getElementById('tierdetail');
+  if (!tier) {
+    el.innerHTML = `<b>${ironPts}</b> of <b>${ELITE}</b> pts for Elite &mdash; any tier counts <span class="dim">&middot; click a segment or press ←/→ to focus a tier</span>`;
+    return;
+  }
+  const i = TT.ironByTier[tier], m = TT.mainByTier[tier], tot = totalByTier[tier];
+  el.innerHTML = `<b>${tier}</b> &middot; ${POINTS[tier]} pt${POINTS[tier]>1?'s':''} each &middot; you <b>${i}/${tot}</b> &middot; <b>${(tot-i)*POINTS[tier]}</b> pts left in tier <span class="dim">&middot; main ${m}/${tot} &middot; threshold ${cumThresh[tier]}</span>`;
+}
+document.getElementById('meter').addEventListener('click', e => {
+  const s = e.target.closest('[data-tier]'); if (!s) return;
+  selectTier(state.sel === s.dataset.tier ? null : s.dataset.tier);
+});
+document.getElementById('meter').addEventListener('mouseover', e => {
+  const s = e.target.closest('[data-tier]'); if (s) tierDetail(s.dataset.tier);
+});
+document.getElementById('meter').addEventListener('mouseleave', () => tierDetail());
 
-  document.getElementById('tiergrid').innerHTML = TIERS.map(tier => `
-  <div class="tier-cell">
-    <span class="pill ${tclass(tier)}">${TIER_ABBR[tier]}</span>
-    <div class="nums">${ironByTier[tier]}/${totalByTier[tier]} <small>&middot; ${POINTS[tier]} pt${POINTS[tier]>1?'s':''} ea</small></div>
-    <div class="minibar"><span style="width:${(ironByTier[tier]/totalByTier[tier]*100).toFixed(1)}%"></span></div>
-    <div class="mainrow">main ${mainByTier[tier]}/${totalByTier[tier]}</div>
-  </div>`).join('');
+function selectTier(tier) {
+  state.sel = tier;
+  state.tiers = new Set(tier ? [tier] : TIERS);
+  document.querySelectorAll('#tierctl .pill').forEach(x => x.classList.toggle('off', !state.tiers.has(x.dataset.t)));
+  renderMeter();
+  animate();
+  render();
+}
+function animate() {
+  const host = state.view === 'boss' ? document.getElementById('bossgrid') : document.getElementById('tablewrap');
+  host.classList.remove('fadein'); void host.offsetWidth; host.classList.add('fadein');
+}
+function setView(v) {
+  if (state.view === v) return;
+  state.view = v;
+  document.querySelectorAll('#viewctl button').forEach(x => x.classList.toggle('on', x.dataset.v === v));
+  animate();
+  render();
 }
 
 // ---- filter state ----
@@ -452,6 +536,7 @@ const state = {
   view: 'flat',
   status: 'todo',
   tiers: new Set(TIERS),
+  sel: null,
   mainonly: false,
   q: '',
   boss: null,
@@ -480,9 +565,7 @@ document.getElementById('bosschips').addEventListener('click', e => {
 // ---- controls ----
 document.getElementById('viewctl').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  state.view = b.dataset.v;
-  document.querySelectorAll('#viewctl button').forEach(x => x.classList.toggle('on', x === b));
-  render();
+  setView(b.dataset.v);
 });
 document.getElementById('statusctl').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
@@ -499,7 +582,9 @@ document.getElementById('tierctl').addEventListener('click', e => {
   else if (state.tiers.size === TIERS.length) { state.tiers = new Set([t]); }
   else if (state.tiers.has(t)) state.tiers.delete(t);
   else state.tiers.add(t);
+  state.sel = state.tiers.size === 1 ? [...state.tiers][0] : null;
   document.querySelectorAll('#tierctl .pill').forEach(x => x.classList.toggle('off', !state.tiers.has(x.dataset.t)));
+  renderMeter();
   render();
 });
 document.getElementById('mainonly').addEventListener('change', e => { state.mainonly = e.target.checked; render(); });
@@ -537,8 +622,9 @@ function render() {
   const ptsInView = rows.reduce((s,t) => s + (t.i ? 0 : t.p), 0);
   const cl = document.getElementById('countline');
 
-  let html = '';
+  const bossgrid = document.getElementById('bossgrid'), tablewrap = document.getElementById('tablewrap');
   if (state.view === 'boss') {
+    tablewrap.hidden = true; bossgrid.hidden = false;
     const groups = new Map();
     for (const t of rows) { if (!groups.has(t.m)) groups.set(t.m, []); groups.get(t.m).push(t); }
     const garr = [...groups.entries()].map(([m, ts]) => {
@@ -555,48 +641,87 @@ function render() {
     cl.innerHTML = `<b>${garr.length}</b> bosses &middot; <b>${rows.length}</b> tasks` +
       (state.status !== 'done' ? ` &middot; <b>${ptsInView}</b> pts on the table in this view &middot; need <b>${NEED}</b>` : '') +
       (state.boss ? ` &middot; boss: <b>${state.boss}</b>` : '');
-    for (const g of garr) {
-      const open = expanded.has(g.m) || garr.length === 1;
-      const tcounts = TIERS
-        .map(tier => ({ tier, n: g.ts.filter(t => t.t === tier && !t.i).length }))
-        .filter(x => x.n)
-        .map(x => `<span class="tcount ${tclass(x.tier)}">${x.n} ${TIER_ABBR[x.tier]}</span>`)
-        .join(' ');
-      html += `<tr class="bosshead" data-m="${g.m.replace(/"/g,'&quot;')}"><td colspan="8"><div class="bh${open?' open':''}">
-        <span class="chev">${open ? '▾' : '▸'}</span>
-        <span class="bname">${g.m}</span>
-        <span class="bpts">${g.rem} pts left</span>
-        ${tcounts}
-        <span class="spacer"></span>
-        <span class="bmeta">done ${g.doneN}/${g.allN} &middot; main ${g.mainN}/${g.allN}</span>
-      </div></td></tr>`;
-      if (open) for (const t of g.ts) html += rowHtml(t);
-    }
-  } else {
-    cl.innerHTML = `<b>${rows.length}</b> tasks shown` +
-      (state.status !== 'done' ? ` &middot; <b>${ptsInView}</b> pts on the table in this view &middot; need <b>${NEED}</b>` : '') +
-      (state.boss ? ` &middot; boss: <b>${state.boss}</b>` : '');
-    let cumPts = 0, cutPlaced = state.status === 'done' || NEED <= 0;
-    for (const t of rows) {
-      if (!cutPlaced && !t.i) {
-        cumPts += t.p;
-        if (cumPts >= NEED) {
-          cutPlaced = true;
-          html += rowHtml(t) + `<tr class="cutline"><td colspan="8">⚔ &nbsp;Elite unlocks here &mdash; the tasks above sum to ${cumPts} pts (need ${NEED}) under the current sort</td></tr>`;
-          continue;
-        }
+    bossgrid.innerHTML = garr.map(g => bcardHtml(g, expanded.has(g.m) || garr.length === 1)).join('')
+      || `<div class="empty">No tasks match these filters.</div>`;
+    return;
+  }
+  tablewrap.hidden = false; bossgrid.hidden = true;
+  cl.innerHTML = `<b>${rows.length}</b> tasks shown` +
+    (state.status !== 'done' ? ` &middot; <b>${ptsInView}</b> pts on the table in this view &middot; need <b>${NEED}</b>` : '') +
+    (state.boss ? ` &middot; boss: <b>${state.boss}</b>` : '');
+  let html = '', cumPts = 0, cutPlaced = state.status === 'done' || NEED <= 0;
+  for (const t of rows) {
+    if (!cutPlaced && !t.i) {
+      cumPts += t.p;
+      if (cumPts >= NEED) {
+        cutPlaced = true;
+        html += rowHtml(t) + `<tr class="cutline"><td colspan="8">⚔ &nbsp;Elite unlocks here &mdash; the tasks above sum to ${cumPts} pts (need ${NEED}) under the current sort</td></tr>`;
+        continue;
       }
-      html += rowHtml(t);
     }
+    html += rowHtml(t);
   }
   document.getElementById('tbody').innerHTML = html || `<tr><td colspan="8"><div class="empty">No tasks match these filters.</div></td></tr>`;
 }
 
-document.getElementById('tbody').addEventListener('click', e => {
-  const h = e.target.closest('tr.bosshead'); if (!h) return;
-  const m = h.dataset.m;
-  if (expanded.has(m)) expanded.delete(m); else expanded.add(m);
-  render();
+function bcardHtml(g, open) {
+  const tcounts = TIERS
+    .map(tier => ({ tier, n: g.ts.filter(t => t.t === tier && !t.i).length }))
+    .filter(x => x.n)
+    .map(x => `<span class="${tclass(x.tier)}">${x.n} ${TIER_ABBR[x.tier]}</span>`)
+    .join(' ');
+  const tasksHtml = !open ? '' : `<div class="btasks">` + g.ts.map(t => `
+    <div class="btask${t.i ? ' done-t' : ''}">
+      <span class="pill ${tclass(t.t)}">${TIER_ABBR[t.t]}</span>
+      <div><span class="btname">${t.n}</span><div class="btdesc">${t.d}</div></div>
+      <span class="btpts">${t.p} pt${t.p>1?'s':''}</span>
+      <span class="btcomp">${t.c == null ? '&mdash;' : t.c.toFixed(1) + '%'}</span>
+      <span class="btchecks">${t.i ? '<span class="yes">✓</span>' : '<span class="no">·</span>'} ${t.x ? '<span class="yes main">✓</span>' : '<span class="no">·</span>'}</span>
+    </div>`).join('') + `</div>`;
+  return `<div class="bcard${open ? ' open' : ''}" tabindex="0" data-m="${g.m.replace(/"/g,'&quot;')}">
+    <div class="bctop"><span class="bname">${g.m}</span><span class="bpts">${g.rem} pts left</span></div>
+    <div class="bcline">${tcounts || '<span style="color:var(--green)">tier-complete ✓</span>'}</div>
+    <div class="minibar"><span style="width:${(g.doneN/g.allN*100).toFixed(1)}%"></span></div>
+    <div class="bcmeta">done ${g.doneN}/${g.allN} &middot; main ${g.mainN}/${g.allN}${open ? '' : ' &middot; open ↵'}</div>
+    ${tasksHtml}
+  </div>`;
+}
+function toggleBoss(m) { if (expanded.has(m)) expanded.delete(m); else expanded.add(m); render(); }
+document.getElementById('bossgrid').addEventListener('click', e => {
+  if (e.target.closest('.btasks')) return;
+  const c = e.target.closest('.bcard'); if (!c) return;
+  toggleBoss(c.dataset.m);
+});
+document.getElementById('bossgrid').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const c = e.target.closest('.bcard'); if (!c) return;
+  e.preventDefault(); toggleBoss(c.dataset.m);
+});
+
+// ---- keyboard: the page as an app ----
+const searchEl = document.getElementById('search');
+addEventListener('keydown', e => {
+  if (e.target === searchEl) {
+    if (e.key === 'Escape') { searchEl.value = ''; state.q = ''; searchEl.blur(); render(); }
+    return;
+  }
+  if (e.metaKey || e.ctrlKey || e.altKey || e.target.closest('input')) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    e.preventDefault();
+    const order = [null, ...TIERS], d = e.key === 'ArrowRight' ? 1 : -1;
+    selectTier(order[(order.indexOf(state.sel) + d + order.length) % order.length]);
+  }
+  else if (e.key === '/') { e.preventDefault(); searchEl.focus(); }
+  else if (e.key === 'b') setView('boss');
+  else if (e.key === 't') setView('flat');
+  else if (e.key === '1' || e.key === '2') {
+    const k = Object.keys(PLAYERS)[+e.key - 1];
+    if (k && k !== cur) applyPlayer(k);
+  }
+  else if (e.key === 'Escape') {
+    state.boss = null; state.q = ''; searchEl.value = '';
+    if (state.sel) selectTier(null); else { buildBossChips(); render(); }
+  }
 });
 
 function rowHtml(t) {
