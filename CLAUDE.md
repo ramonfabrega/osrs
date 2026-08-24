@@ -19,14 +19,18 @@ lesson is baked in.)
 ## Architecture
 
 - Bun monorepo (`packages/*`, `apps/*`).
-- **`packages/road-to-elite`** — first tenant. Combat Achievements tracker
-  (static HTML, all data baked; `build.ts` regenerates). Live at
-  `cdn.ramonfabrega.com/osrs/road-to-elite.html` until the worker exists.
-- **Worker (v0, not yet built)** — one Hono worker serving static pages +
-  `/api/wikisync/:name` (server-side proxy to `sync.runescape.wiki`, short
-  cache, public). Same deploy shape as dotfiles/cdn `cdn-explorer`: Workers
-  Builds off `master`, custom domain `osrs.ramonfabrega.com`. Pages and API
-  are same-origin → zero CORS anywhere.
+- **`packages/road-to-elite`** — first tenant. Combat Achievements tracker:
+  `template.html` is the complete page (design + client logic) with one
+  `__DATA__` marker; the worker renders it with fresh data at request time.
+  No build step. Served at `osrs.ramonfabrega.com/road-to-elite` (a frozen
+  pre-worker snapshot also sits at `cdn.ramonfabrega.com/osrs/road-to-elite.html`).
+- **`apps/worker`** — the one Hono worker (`name: osrs`) behind
+  `osrs.ramonfabrega.com` (custom domain, wrangler-provisioned): renders
+  pages at request time (upstream fetches edge-cached ~5 min) and exposes
+  `/api/wikisync/:name` (server-side WikiSync proxy, public). Pages and API
+  are same-origin → zero CORS anywhere. `bun test` covers data assembly;
+  deploy with `bunx wrangler deploy` (Workers Builds off master is the
+  eventual shape, same as dotfiles/cdn `cdn-explorer`).
 - **`packages/legacy`** — quarantined pre-revive code (stars/GE/stream, Oct
   2025). Has uncommitted local changes in the main checkout (`dmm.ts`,
   `stars.ts`, `dmm-ranarr.ts`) — do not delete without the user; dissect or
@@ -38,9 +42,12 @@ lesson is baked in.)
   Origin allowlist 403s every non-wiki browser Origin — measured, not
   assumed. The wiki's own APIs (Bucket, module raw) are `ACAO: *` and may be
   fetched from anywhere.
-- **Static-first pages.** Data baked at build; live fetch is progressive
-  enhancement once the worker exists (baked data stays as the instant-render
-  fallback, pages state their snapshot honestly).
+- **Request-time render, no build step.** Pages are authored as complete
+  static HTML with a `__DATA__` marker; the worker injects fresh data per
+  request. A baked-snapshot pipeline existed for the worker-less interim and
+  was deleted once the worker shipped — nothing requires a build once a
+  server exists (user call, 2026-08-23). Pages state their data timestamp
+  honestly.
 - **Public surface, no auth** — everything served is read-only public game
   data.
 - **The RS-specific never leaks into agnostic infra.** The CDN worker stays

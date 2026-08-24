@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "osrs",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-01",
+  "observability": { "enabled": true },
+
+  // The worker owns osrs.ramonfabrega.com. wrangler provisions DNS + cert
+  // (same shape as dotfiles/cdn cdn-explorer).
+  "routes": [{ "pattern": "osrs.ramonfabrega.com", "custom_domain": true }],
+
+  // Pages are authored as complete static HTML with a __DATA__ marker; the
+  // worker bundles them as text and injects fresh data at request time.
+  "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }]
+}

@@ -69,20 +69,30 @@ checkout** (`ge/dmm.ts`, `stars.ts` modified; `ge/dmm-ranarr.ts` untracked),
 so deletion is the user's call, not a session's. Everything else on this
 branch is fresh.
 
-## v0 cut for the first session
+## v0 — built 2026-08-23/24 (amended from the original cut)
 
-1. **Worker scaffold** (`apps/worker` or `worker/`): Hono; static assets;
-   `GET /api/wikisync/:name` → WikiSync with a proper UA, ~5 min cache,
-   public. Mirror cdn-explorer's shape (Workers Builds off master,
-   `custom_domain: osrs.ramonfabrega.com`, observability on).
-2. **Cloudflare hookup** (the one human-in-loop step): connect the GitHub
-   repo to Workers Builds, let wrangler provision the custom domain.
-3. **Wire road-to-elite live**: page fetches `/api/wikisync/<name>` for the
-   active player pair on load; baked data renders instantly as fallback;
-   header states "live · synced …" vs "snapshot <date>" honestly. Keep
-   `build.ts` — baked data remains the fallback and the offline path.
-4. Retire the CDN copy (`cdn.ramonfabrega.com/osrs/road-to-elite.html`) or
-   leave it as a frozen snapshot; the canonical URL becomes the osrs domain.
+Two amendments over the plan above, both user calls made during review:
 
-Non-goals for v0: migrating leagues/unlocks/stars, touching legacy, auth,
+1. **Request-time render, not baked-fallback.** The user challenged the
+   build step ("what requires a build that simple HTML with Hono can't
+   do?") — and the answer is nothing, once a server exists. `build.ts` was
+   the liveness mechanism of the worker-less world; the worker renders
+   `template.html` with fresh data per request instead (upstreams
+   edge-cached ~5 min), so the script was deleted rather than kept as a
+   fallback. One source of truth, no publish step, no stale snapshots.
+2. **Built from the lore session, not a fresh session in-repo.** Deviation
+   from seed doctrine step 9, explicit user call ("we got the context to
+   leave this in a good state instead of handing this off") — the CORS
+   evidence, template, and decisions were all loaded there.
+
+Shipped: `apps/worker` — Hono, `GET /road-to-elite` (render), `GET /`
+(redirect), `GET /api/wikisync/:name` (proxy for future tenants /
+client-side refresh), 4 unit tests on the pure data assembly, smoke-tested
+via `wrangler dev` (200/145KB page with live timestamp, 302 root, proxy
+JSON). Deploy = `bunx wrangler deploy` from `apps/worker` (wrangler
+provisions the custom domain); Workers-Builds-off-master can replace manual
+deploys later, same as cdn-explorer. The CDN copy stays as a frozen
+pre-worker snapshot.
+
+Non-goals unchanged: migrating leagues/unlocks/stars, touching legacy, auth,
 any model-driven anything.
