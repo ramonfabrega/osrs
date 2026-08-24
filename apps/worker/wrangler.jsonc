@@ -1,5 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  // Workers Builds: root directory is apps/worker (dashboard build config).
   "name": "osrs",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-01",
@@ -21,5 +22,3 @@
     { "type": "Data", "globs": ["**/*.png"], "fallthrough": true }
   ]
 }
-
-// build-config: root directory apps/worker (set in Workers Builds dashboard)
