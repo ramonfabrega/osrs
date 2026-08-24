@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Road to Elite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground: #14100A;
+    --panel: #1E1812;
+    --panel-2: #262015;
+    --edge: #3A2F1E;
+    --edge-soft: #2B2314;
+    --ink: #EAE0C8;
+    --ink-mute: #A2926E;
+    --ink-faint: #6E6250;
+    --gold: #D9B44A;
+    --gold-deep: #A8842E;
+    --green: #86BF6A;
+    --ice: #9FC7E8;
+
+    --bronze: #B08D57;
+    --steel: #9FAAB5;
+    --obsidian: #57504A;
+    --blood: #C0584A;
+
+    --display: "Cinzel", ui-serif, Georgia, serif;
+    --body: "Alegreya Sans", system-ui, -apple-system, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 52px 24px 110px;
+    background: var(--ground);
+    background-image: radial-gradient(ellipse 1200px 500px at 50% -100px, #221A0E 0%, var(--ground) 70%);
+    color: var(--ink);
+    font-family: var(--body); font-size: 16px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 1100px; margin: 0 auto; }
+
+  /* ---------- header ---------- */
+  .eyebrow {
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.22em;
+    color: var(--gold-deep); margin-bottom: 14px;
+  }
+  h1 {
+    font-family: var(--display); font-weight: 600;
+    font-size: clamp(34px, 5vw, 54px); line-height: 1.1;
+    letter-spacing: 0.01em; margin: 0 0 10px; color: var(--ink);
+    text-wrap: balance;
+  }
+  h1 .goal { color: var(--gold); }
+  .subline { color: var(--ink-mute); font-size: 15px; }
+  .subrow { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 12px; }
+  .acct {
+    font-family: var(--mono); font-size: 13px; color: var(--ink);
+    background: var(--panel); border: 1px solid var(--edge);
+    border-radius: 3px; padding: 1px 7px; white-space: nowrap;
+  }
+
+  /* ---------- hero band ---------- */
+  .band {
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 14px;
+    margin: 34px 0 16px;
+  }
+  @media (max-width: 840px) { .band { grid-template-columns: 1fr 1fr; } }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-radius: 6px;
+    padding: 20px 22px 17px;
+    box-shadow: inset 0 1px 0 rgba(234,224,200,0.04);
+  }
+  .card.hero { border-color: var(--gold-deep); background: linear-gradient(180deg, #2A2110, var(--panel)); }
+  .card .num {
+    font-family: var(--display); font-weight: 700;
+    font-size: 42px; line-height: 1; color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .card.hero .num { color: var(--gold); font-size: 50px; }
+  .card .num small { font-size: 20px; color: var(--ink-mute); font-weight: 500; }
+  .card .label {
+    font-family: var(--mono); font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ink-mute); margin-top: 9px;
+  }
+  .card .sub { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); margin-top: 5px; }
+  .card .sub.good { color: var(--green); }
+
+  /* ---------- meter ---------- */
+  .meter-panel {
+    background: var(--panel); border: 1px solid var(--edge); border-radius: 6px;
+    padding: 30px 28px 16px; margin-bottom: 16px;
+  }
+  .meter { position: relative; height: 80px; }
+  .track {
+    position: absolute; left: 0; right: 0; top: 38px; height: 12px;
+    border-radius: 6px; overflow: hidden; background: #0E0B07;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+  }
+  .seg { position: absolute; top: 0; bottom: 0; }
+  .fill {
+    position: absolute; top: 38px; height: 12px; left: 0;
+    border-radius: 6px 0 0 6px;
+    background: linear-gradient(180deg, #E8C866, var(--gold) 45%, var(--gold-deep));
+  }
+  .tick { position: absolute; top: 34px; width: 1px; height: 20px; background: var(--edge); }
+  .tick.elite { background: var(--ice); width: 2px; top: 31px; height: 26px; }
+  .tick-label {
+    position: absolute; top: 60px; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 10px; color: var(--ink-faint); white-space: nowrap;
+  }
+  .tick-label.elite { color: var(--ice); font-weight: 600; }
+  .marker { position: absolute; top: 10px; transform: translateX(-50%); font-family: var(--mono); font-size: 11.5px; white-space: nowrap; }
+  .marker::after { content: ""; position: absolute; left: 50%; top: 19px; width: 2px; height: 24px; transform: translateX(-50%); }
+  .marker.iron { color: var(--gold); font-weight: 600; }
+  .marker.iron::after { background: var(--gold); }
+  .marker.main { color: var(--steel); }
+  .marker.main::after { background: var(--steel); opacity: 0.6; }
+  .meter-caption { font-size: 13.5px; color: var(--ink-mute); margin-top: 12px; }
+  .meter-caption b { color: var(--ink); font-weight: 500; }
+
+  /* ---------- tier strip ---------- */
+  .tier-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 44px; }
+  @media (max-width: 900px) { .tier-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 560px) { .tier-grid { grid-template-columns: repeat(2, 1fr); } }
+  .tier-cell { background: var(--panel); border: 1px solid var(--edge-soft); border-radius: 6px; padding: 13px 15px; }
+  .tier-cell .nums { font-family: var(--mono); font-size: 13px; color: var(--ink); margin: 9px 0 7px; font-variant-numeric: tabular-nums; }
+  .tier-cell .nums small { color: var(--ink-faint); font-size: 10.5px; }
+  .minibar { height: 4px; border-radius: 2px; background: #0E0B07; overflow: hidden; }
+  .minibar span { display: block; height: 100%; background: var(--green); border-radius: 2px; }
+  .tier-cell .mainrow { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); margin-top: 7px; }
+
+  /* ---------- tier chips (CA crest metals) ---------- */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    border-radius: 3px; padding: 2px 9px;
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    letter-spacing: 0.04em; white-space: nowrap;
+    background: var(--panel-2); border: 1px solid var(--edge);
+    color: var(--ink-mute);
+  }
+  .pill::before { content: ""; width: 8px; height: 8px; border-radius: 2px; transform: rotate(45deg); flex-shrink: 0; }
+  .t-easy::before        { background: var(--bronze); }
+  .t-medium::before      { background: var(--steel); }
+  .t-hard::before        { background: var(--obsidian); border: 1px solid #6E6459; }
+  .t-elite::before       { background: var(--ice); }
+  .t-master::before      { background: var(--blood); }
+  .t-grandmaster::before { background: var(--gold); }
+  .t-easy   { color: var(--bronze); }
+  .t-medium { color: var(--steel); }
+  .t-hard   { color: #8D847B; }
+  .t-elite  { color: var(--ice); }
+  .t-master { color: var(--blood); }
+  .t-grandmaster { color: var(--gold); }
+
+  /* ---------- section head ---------- */
+  h2 {
+    font-family: var(--display); font-weight: 600; font-size: 26px;
+    letter-spacing: 0.01em; margin: 0 0 6px; color: var(--ink);
+  }
+  .section-sub { color: var(--ink-mute); font-size: 15px; max-width: 68ch; }
+
+  /* ---------- filters ---------- */
+  .filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 18px 0 10px; }
+  .seg-ctl { display: inline-flex; background: #0E0B07; border: 1px solid var(--edge); border-radius: 4px; padding: 3px; }
+  .seg-ctl button {
+    border: none; background: transparent; font-family: var(--mono); font-size: 12px;
+    color: var(--ink-mute); padding: 5px 14px; border-radius: 3px; cursor: pointer;
+  }
+  .seg-ctl button.on { background: var(--gold-deep); color: #14100A; font-weight: 600; }
+  .tier-toggles { display: inline-flex; gap: 5px; flex-wrap: wrap; }
+  .tier-toggles .pill { cursor: pointer; user-select: none; }
+  .tier-toggles .pill.off { opacity: 0.3; }
+  input.search {
+    font: 13px var(--mono); color: var(--ink); background: #0E0B07;
+    border: 1px solid var(--edge); border-radius: 4px; padding: 7px 13px;
+    width: 210px; outline: none;
+  }
+  input.search::placeholder { color: var(--ink-faint); }
+  input.search:focus { border-color: var(--gold-deep); }
+  .chk { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; color: var(--ink-mute); cursor: pointer; user-select: none; }
+  .chk input { accent-color: var(--gold-deep); width: 15px; height: 15px; }
+
+  .boss-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 16px; align-items: center; }
+  .boss-chips .lbl {
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--ink-faint); margin-right: 4px;
+  }
+  .chip {
+    font-family: var(--mono); font-size: 11.5px; color: var(--ink-mute);
+    background: var(--panel); border: 1px solid var(--edge); border-radius: 3px;
+    padding: 4px 10px; cursor: pointer; user-select: none;
+  }
+  .chip:hover { color: var(--ink); border-color: var(--gold-deep); }
+  .chip b { color: var(--gold); font-weight: 600; }
+  .chip.on { background: var(--gold-deep); color: #14100A; border-color: var(--gold); }
+  .chip.on b { color: #14100A; }
+
+  .countline { font-family: var(--mono); font-size: 12.5px; color: var(--ink-mute); margin: 0 0 12px; }
+  .countline b { color: var(--gold); font-weight: 600; }
+
+  /* ---------- table ---------- */
+  .table-wrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--edge); border-radius: 6px; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 900px; }
+  thead th {
+    position: sticky; top: 0; z-index: 2;
+    text-align: left; font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--ink-mute); background: var(--panel-2);
+    padding: 12px 15px; border-bottom: 1px solid var(--edge); white-space: nowrap;
+  }
+  thead th.sortable { cursor: pointer; user-select: none; }
+  thead th.sortable:hover { color: var(--gold); }
+  thead th .arr { font-size: 9px; color: var(--gold); }
+  tbody td { padding: 12px 15px; border-bottom: 1px solid var(--edge-soft); font-size: 14.5px; vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: rgba(217,180,74,0.045); }
+  tbody tr.done td { background: rgba(134,191,106,0.05); }
+  tbody tr.done:hover td { background: rgba(134,191,106,0.09); }
+  td.taskcell .tname { font-weight: 700; color: var(--ink); font-size: 14.5px; }
+  td.taskcell .tdesc { font-size: 13px; color: var(--ink-mute); line-height: 1.45; margin-top: 2px; }
+  td.monster { font-size: 13.5px; color: var(--ink); font-weight: 500; white-space: nowrap; }
+  td.type { font-size: 12px; color: var(--ink-faint); white-space: nowrap; font-family: var(--mono); }
+  td.pts { font-family: var(--mono); font-size: 13px; color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+  td.comp { white-space: nowrap; }
+  .compnum { font-family: var(--mono); font-size: 12.5px; color: var(--ink); display: inline-block; width: 46px; font-variant-numeric: tabular-nums; }
+  .compbar { display: inline-block; vertical-align: middle; width: 58px; height: 4px; border-radius: 2px; background: #0E0B07; overflow: hidden; }
+  .compbar span { display: block; height: 100%; background: var(--ink-mute); border-radius: 2px; }
+  td.acct-col { text-align: center; font-size: 14px; }
+  .yes { color: var(--green); font-weight: 700; }
+  .yes.main { color: var(--steel); font-weight: 500; }
+  .no { color: #3A3327; }
+  tr.cutline td {
+    background: rgba(217,180,74,0.10) !important;
+    border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold);
+    font-family: var(--mono); font-size: 12px; color: var(--gold);
+    font-weight: 600; text-align: center; padding: 9px 15px;
+  }
+  tr.bosshead td {
+    background: var(--panel-2); cursor: pointer; user-select: none;
+    padding: 10px 15px; border-bottom: 1px solid var(--edge);
+  }
+  tr.bosshead:hover td { background: #2C2416; }
+  .bh { display: flex; align-items: baseline; gap: 13px; flex-wrap: wrap; }
+  .bh .chev { font-size: 10px; color: var(--ink-faint); width: 12px; display: inline-block; }
+  .bh .bname { font-weight: 700; color: var(--ink); font-size: 14.5px; }
+  .bh .bpts { font-family: var(--mono); font-size: 12px; color: var(--gold); font-weight: 600; }
+  .bh .bmeta { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
+  .bh .tcount { font-family: var(--mono); font-size: 11px; font-weight: 500; }
+  .bh .spacer { flex: 1; }
+  .empty { padding: 44px; text-align: center; color: var(--ink-faint); font-size: 14px; }
+
+  footer {
+    margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--edge-soft);
+    font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); line-height: 1.9;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .fill { transition: width 900ms cubic-bezier(0.22, 1, 0.36, 1); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="eyebrow">Old School RuneScape &middot; Combat Achievements</div>
+    <h1>Road to <span class="goal">Elite</span></h1>
+    <div class="subline subrow">
+      <span class="seg-ctl" id="playerctl"></span>
+      <span id="accline"></span>
+      <span>&middot;&nbsp; data as of <span id="snapdate"></span></span>
+    </div>
+  </header>
+
+  <div class="band" id="statband"></div>
+
+  <div class="meter-panel">
+    <div class="meter" id="meter"></div>
+    <div class="meter-caption">Total Combat Achievement points, 0 &rarr; 2,672. A tier's rewards unlock when <b>total points from any tier</b> reach its threshold &mdash; ticks mark each cumulative cutoff, so Master and Grandmaster tasks push toward Elite too.</div>
+  </div>
+
+  <div class="tier-grid" id="tiergrid"></div>
+
+  <h2>The task list</h2>
+  <p class="section-sub">Default view: everything <span class="acct" id="subiron"></span> hasn't done, easiest first by the wiki's crowdsourced completion rate. The gold line marks where Elite unlocks under the current sort.</p>
+
+  <div class="filters">
+    <span class="seg-ctl" id="viewctl">
+      <button data-v="flat" class="on">Tasks</button>
+      <button data-v="boss">By boss</button>
+    </span>
+    <span class="seg-ctl" id="statusctl">
+      <button data-s="todo" class="on">To do</button>
+      <button data-s="done">Done</button>
+      <button data-s="all">All</button>
+    </span>
+    <span class="tier-toggles" id="tierctl"></span>
+    <label class="chk"><input type="checkbox" id="mainonly"> done on main</label>
+    <input class="search" id="search" type="search" placeholder="search task / boss&hellip;">
+  </div>
+  <div class="boss-chips" id="bosschips"></div>
+
+  <div class="countline" id="countline"></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="sortable" data-k="monster">Monster<span class="arr"></span></th>
+          <th class="sortable" data-k="name" style="width:42%">Task<span class="arr"></span></th>
+          <th class="sortable" data-k="tier">Tier<span class="arr"></span></th>
+          <th>Type</th>
+          <th class="sortable" data-k="pts" style="text-align:right">Pts<span class="arr"></span></th>
+          <th class="sortable" data-k="comp">Comp%<span class="arr"></span></th>
+          <th style="text-align:center" id="th-iron"></th>
+          <th style="text-align:center" id="th-main"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    sources: OSRS Wiki Bucket API (task list) &middot; Module:Combat Achievements/completion.json (comp%) &middot; WikiSync via RuneLite (per-account progress)<br>
+    rendered per request (upstreams edge-cached ~5 min) &middot; comp% is the share of wiki-synced players with &geq;1 CA who completed the task &middot; account data syncs on RuneLite logout
+  </footer>
+
+</div>
+
+<script>
+const DATA = __DATA__;
+
+const POINTS = { Easy:1, Medium:2, Hard:3, Elite:4, Master:5, Grandmaster:6 };
+const TIERS = ['Easy','Medium','Hard','Elite','Master','Grandmaster'];
+const TIER_ABBR = { Easy:'Easy', Medium:'Med', Hard:'Hard', Elite:'Elite', Master:'Master', Grandmaster:'GM' };
+const tclass = t => 't-' + t.toLowerCase();
+
+const tasks = DATA.tasks;
+for (const t of tasks) t.p = POINTS[t.t];
+const PLAYERS = DATA.players;
+
+// ---- static tallies ----
+const totalByTier = {}, cumThresh = {};
+{
+  let cum = 0;
+  for (const tier of TIERS) totalByTier[tier] = 0;
+  for (const t of tasks) totalByTier[t.t]++;
+  for (const tier of TIERS) { cum += totalByTier[tier]*POINTS[tier]; cumThresh[tier] = cum; }
+}
+const MAX = cumThresh.Grandmaster, ELITE = cumThresh.Elite;
+const tierReached = pts => { let r = null; for (const tier of TIERS) if (pts >= cumThresh[tier]) r = tier; return r; };
+
+// ---- per-player globals (set by applyPlayer) ----
+let cur = null, NEED = 0, ironPts = 0, mainPts = 0;
+
+document.getElementById('snapdate').textContent = DATA.generated;
+
+// ---- header renders (per player) ----
+const pct = v => (v / MAX * 100).toFixed(2) + '%';
+function renderHeader(ironByTier, mainByTier, ironDone, mainDone) {
+  const p = PLAYERS[cur];
+  document.getElementById('accline').innerHTML =
+    `<span class="acct">${p.iron}</span> (ironman) &nbsp;&middot;&nbsp; reference: <span class="acct">${p.main}</span> (main)`;
+  document.getElementById('subiron').textContent = p.iron;
+  document.getElementById('th-iron').textContent = p.iron;
+  document.getElementById('th-main').textContent = p.main;
+
+  const iTier = tierReached(ironPts), mTier = tierReached(mainPts);
+  document.getElementById('statband').innerHTML = `
+  <div class="card hero">
+    <div class="num">${NEED > 0 ? NEED : '✓'}</div>
+    <div class="label">${NEED > 0 ? 'points to Elite' : 'Elite unlocked'}</div>
+    <div class="sub">threshold ${ELITE} pts</div>
+  </div>
+  <div class="card">
+    <div class="num">${ironPts}<small> pts</small></div>
+    <div class="label">${p.iron} &mdash; current</div>
+    <div class="sub good">${ironDone}/${tasks.length} tasks${iTier ? ' &middot; ' + TIER_ABBR[iTier] + ' ✓' : ''}</div>
+  </div>
+  <div class="card">
+    <div class="num">${Math.min(100, Math.round(ironPts/ELITE*100))}<small>%</small></div>
+    <div class="label">of the way there</div>
+    <div class="sub">${Math.max(NEED, 0)} pts remain</div>
+  </div>
+  <div class="card">
+    <div class="num">${mainPts}<small> pts</small></div>
+    <div class="label">${p.main} &mdash; reference</div>
+    <div class="sub">${mainDone}/${tasks.length} tasks${mTier ? ' &middot; ' + TIER_ABBR[mTier] + ' ✓' : ''}</div>
+  </div>`;
+
+  const segTint = { Easy:'rgba(176,141,87,0.16)', Medium:'rgba(159,170,181,0.12)', Hard:'rgba(110,100,89,0.16)', Elite:'rgba(159,199,232,0.10)', Master:'rgba(192,88,74,0.10)', Grandmaster:'rgba(217,180,74,0.10)' };
+  let segs = '', prev = 0;
+  for (const tier of TIERS) {
+    segs += `<div class="seg" style="left:${pct(prev)};width:${(cumThresh[tier]-prev)/MAX*100}%;background:${segTint[tier]}"></div>`;
+    prev = cumThresh[tier];
+  }
+  let ticks = '';
+  for (const tier of TIERS) {
+    const isE = tier === 'Elite';
+    ticks += `<div class="tick${isE?' elite':''}" style="left:${pct(cumThresh[tier])}"></div>
+              <div class="tick-label${isE?' elite':''}" style="left:${pct(cumThresh[tier])}">${TIER_ABBR[tier]} ${cumThresh[tier]}</div>`;
+  }
+  document.getElementById('meter').innerHTML = `
+    <div class="track">${segs}</div>
+    <div class="fill" style="width:${pct(ironPts)}"></div>
+    ${ticks}
+    <div class="marker iron" style="left:${pct(ironPts)}">${p.iron} ${ironPts}</div>
+    <div class="marker main" style="left:${pct(mainPts)}">${p.main} ${mainPts}</div>`;
+
+  document.getElementById('tiergrid').innerHTML = TIERS.map(tier => `
+  <div class="tier-cell">
+    <span class="pill ${tclass(tier)}">${TIER_ABBR[tier]}</span>
+    <div class="nums">${ironByTier[tier]}/${totalByTier[tier]} <small>&middot; ${POINTS[tier]} pt${POINTS[tier]>1?'s':''} ea</small></div>
+    <div class="minibar"><span style="width:${(ironByTier[tier]/totalByTier[tier]*100).toFixed(1)}%"></span></div>
+    <div class="mainrow">main ${mainByTier[tier]}/${totalByTier[tier]}</div>
+  </div>`).join('');
+}
+
+// ---- filter state ----
+const state = {
+  view: 'flat',
+  status: 'todo',
+  tiers: new Set(TIERS),
+  mainonly: false,
+  q: '',
+  boss: null,
+  sort: { k: 'comp', dir: -1 },
+};
+const expanded = new Set();
+if (new URLSearchParams(location.search).get('view') === 'boss') state.view = 'boss';
+document.querySelectorAll('#viewctl button').forEach(x => x.classList.toggle('on', x.dataset.v === state.view));
+
+// ---- boss chips: biggest remaining point sources (≤ Elite) ----
+function buildBossChips() {
+  const src = {};
+  for (const t of tasks) if (!t.i && t.p <= 4) src[t.m] = (src[t.m]||0) + t.p;
+  const top = Object.entries(src).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  document.getElementById('bosschips').innerHTML =
+    '<span class="lbl">biggest remaining &leq; elite</span>' +
+    top.map(([m,p]) => `<span class="chip${state.boss === m ? ' on' : ''}" data-m="${m.replace(/"/g,'&quot;')}">${m} <b>${p}</b></span>`).join('');
+}
+document.getElementById('bosschips').addEventListener('click', e => {
+  const c = e.target.closest('.chip'); if (!c) return;
+  state.boss = (state.boss === c.dataset.m) ? null : c.dataset.m;
+  document.querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x.dataset.m === state.boss));
+  render();
+});
+
+// ---- controls ----
+document.getElementById('viewctl').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  state.view = b.dataset.v;
+  document.querySelectorAll('#viewctl button').forEach(x => x.classList.toggle('on', x === b));
+  render();
+});
+document.getElementById('statusctl').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  state.status = b.dataset.s;
+  document.querySelectorAll('#statusctl button').forEach(x => x.classList.toggle('on', x === b));
+  render();
+});
+document.getElementById('tierctl').innerHTML = TIERS.map(t =>
+  `<span class="pill ${tclass(t)}" data-t="${t}">${TIER_ABBR[t]}</span>`).join('');
+document.getElementById('tierctl').addEventListener('click', e => {
+  const p = e.target.closest('.pill'); if (!p) return;
+  const t = p.dataset.t;
+  if (state.tiers.has(t) && state.tiers.size === 1) { TIERS.forEach(x => state.tiers.add(x)); }
+  else if (state.tiers.size === TIERS.length) { state.tiers = new Set([t]); }
+  else if (state.tiers.has(t)) state.tiers.delete(t);
+  else state.tiers.add(t);
+  document.querySelectorAll('#tierctl .pill').forEach(x => x.classList.toggle('off', !state.tiers.has(x.dataset.t)));
+  render();
+});
+document.getElementById('mainonly').addEventListener('change', e => { state.mainonly = e.target.checked; render(); });
+document.getElementById('search').addEventListener('input', e => { state.q = e.target.value.toLowerCase().trim(); render(); });
+document.querySelectorAll('th.sortable').forEach(th => th.addEventListener('click', () => {
+  const k = th.dataset.k;
+  if (state.sort.k === k) state.sort.dir *= -1;
+  else state.sort = { k, dir: (k === 'comp' || k === 'pts') ? -1 : 1 };
+  render();
+}));
+
+const cmp = {
+  comp:    (a,b) => ( (a.c ?? -1) - (b.c ?? -1) ),
+  pts:     (a,b) => a.p - b.p,
+  tier:    (a,b) => a.p - b.p,
+  monster: (a,b) => a.m.localeCompare(b.m),
+  name:    (a,b) => a.n.localeCompare(b.n),
+};
+
+function render() {
+  let rows = tasks.filter(t =>
+    state.tiers.has(t.t) &&
+    (state.status === 'all' || (state.status === 'done') === t.i) &&
+    (!state.mainonly || t.x) &&
+    (!state.boss || t.m === state.boss) &&
+    (!state.q || (t.n + ' ' + t.m + ' ' + t.d).toLowerCase().includes(state.q))
+  );
+  const { k, dir } = state.sort;
+  rows.sort((a,b) => { const d = cmp[k](a,b) * dir; return d !== 0 ? d : ( (b.c ?? -1) - (a.c ?? -1) ); });
+
+  document.querySelectorAll('th.sortable .arr').forEach(s => s.textContent = '');
+  const th = document.querySelector(`th[data-k="${k}"] .arr`);
+  if (th) th.textContent = dir === 1 ? ' ▲' : ' ▼';
+
+  const ptsInView = rows.reduce((s,t) => s + (t.i ? 0 : t.p), 0);
+  const cl = document.getElementById('countline');
+
+  let html = '';
+  if (state.view === 'boss') {
+    const groups = new Map();
+    for (const t of rows) { if (!groups.has(t.m)) groups.set(t.m, []); groups.get(t.m).push(t); }
+    const garr = [...groups.entries()].map(([m, ts]) => {
+      const all = tasks.filter(t => t.m === m);
+      return {
+        m, ts,
+        rem: ts.reduce((s,t) => s + (t.i ? 0 : t.p), 0),
+        doneN: all.filter(t => t.i).length,
+        mainN: all.filter(t => t.x).length,
+        allN: all.length,
+      };
+    });
+    garr.sort((a,b) => (b.rem - a.rem) || (b.ts.length - a.ts.length) || a.m.localeCompare(b.m));
+    cl.innerHTML = `<b>${garr.length}</b> bosses &middot; <b>${rows.length}</b> tasks` +
+      (state.status !== 'done' ? ` &middot; <b>${ptsInView}</b> pts on the table in this view &middot; need <b>${NEED}</b>` : '') +
+      (state.boss ? ` &middot; boss: <b>${state.boss}</b>` : '');
+    for (const g of garr) {
+      const open = expanded.has(g.m) || garr.length === 1;
+      const tcounts = TIERS
+        .map(tier => ({ tier, n: g.ts.filter(t => t.t === tier && !t.i).length }))
+        .filter(x => x.n)
+        .map(x => `<span class="tcount ${tclass(x.tier)}">${x.n} ${TIER_ABBR[x.tier]}</span>`)
+        .join(' ');
+      html += `<tr class="bosshead" data-m="${g.m.replace(/"/g,'&quot;')}"><td colspan="8"><div class="bh${open?' open':''}">
+        <span class="chev">${open ? '▾' : '▸'}</span>
+        <span class="bname">${g.m}</span>
+        <span class="bpts">${g.rem} pts left</span>
+        ${tcounts}
+        <span class="spacer"></span>
+        <span class="bmeta">done ${g.doneN}/${g.allN} &middot; main ${g.mainN}/${g.allN}</span>
+      </div></td></tr>`;
+      if (open) for (const t of g.ts) html += rowHtml(t);
+    }
+  } else {
+    cl.innerHTML = `<b>${rows.length}</b> tasks shown` +
+      (state.status !== 'done' ? ` &middot; <b>${ptsInView}</b> pts on the table in this view &middot; need <b>${NEED}</b>` : '') +
+      (state.boss ? ` &middot; boss: <b>${state.boss}</b>` : '');
+    let cumPts = 0, cutPlaced = state.status === 'done' || NEED <= 0;
+    for (const t of rows) {
+      if (!cutPlaced && !t.i) {
+        cumPts += t.p;
+        if (cumPts >= NEED) {
+          cutPlaced = true;
+          html += rowHtml(t) + `<tr class="cutline"><td colspan="8">⚔ &nbsp;Elite unlocks here &mdash; the tasks above sum to ${cumPts} pts (need ${NEED}) under the current sort</td></tr>`;
+          continue;
+        }
+      }
+      html += rowHtml(t);
+    }
+  }
+  document.getElementById('tbody').innerHTML = html || `<tr><td colspan="8"><div class="empty">No tasks match these filters.</div></td></tr>`;
+}
+
+document.getElementById('tbody').addEventListener('click', e => {
+  const h = e.target.closest('tr.bosshead'); if (!h) return;
+  const m = h.dataset.m;
+  if (expanded.has(m)) expanded.delete(m); else expanded.add(m);
+  render();
+});
+
+function rowHtml(t) {
+  const compCell = t.c == null
+    ? `<span class="compnum" style="color:var(--ink-faint)">&mdash;</span>`
+    : `<span class="compnum">${t.c.toFixed(1)}</span><span class="compbar"><span style="width:${t.c}%"></span></span>`;
+  return `<tr${t.i ? ' class="done"' : ''}>
+    <td class="monster">${t.m}</td>
+    <td class="taskcell"><div class="tname">${t.n}</div><div class="tdesc">${t.d}</div></td>
+    <td><span class="pill ${tclass(t.t)}">${TIER_ABBR[t.t]}</span></td>
+    <td class="type">${t.y}</td>
+    <td class="pts">${t.p}</td>
+    <td class="comp">${compCell}</td>
+    <td class="acct-col">${t.i ? '<span class="yes">✓</span>' : '<span class="no">·</span>'}</td>
+    <td class="acct-col">${t.x ? '<span class="yes main">✓</span>' : '<span class="no">·</span>'}</td>
+  </tr>`;
+}
+
+// ---- player toggle + init ----
+document.getElementById('playerctl').innerHTML = Object.entries(PLAYERS)
+  .map(([k, p]) => `<button data-p="${k}">${p.label}</button>`).join('');
+document.getElementById('playerctl').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.p !== cur) applyPlayer(b.dataset.p);
+});
+
+function applyPlayer(key) {
+  cur = key;
+  const p = PLAYERS[key];
+  const iset = new Set(p.ironIds), mset = new Set(p.mainIds);
+  ironPts = 0; mainPts = 0;
+  let ironDone = 0, mainDone = 0;
+  const ironByTier = {}, mainByTier = {};
+  for (const tier of TIERS) { ironByTier[tier] = 0; mainByTier[tier] = 0; }
+  for (const t of tasks) {
+    t.i = iset.has(t.id); t.x = mset.has(t.id);
+    if (t.i) { ironByTier[t.t]++; ironPts += t.p; ironDone++; }
+    if (t.x) { mainByTier[t.t]++; mainPts += t.p; mainDone++; }
+  }
+  NEED = ELITE - ironPts;
+  document.querySelectorAll('#playerctl button').forEach(x => x.classList.toggle('on', x.dataset.p === cur));
+  renderHeader(ironByTier, mainByTier, ironDone, mainDone);
+  buildBossChips();
+  render();
+}
+
+const pparam = new URLSearchParams(location.search).get('p');
+applyPlayer(PLAYERS[pparam] ? pparam : 'ramon');
+</script>
+</body>
+</html>
