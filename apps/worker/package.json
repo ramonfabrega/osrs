@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev -c ../../wrangler.jsonc",
-    "deploy": "wrangler deploy -c ../../wrangler.jsonc",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
     "test": "bun test"
   },
   "dependencies": {

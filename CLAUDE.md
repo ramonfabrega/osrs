@@ -28,11 +28,9 @@ lesson is baked in.)
   `osrs.ramonfabrega.com` (custom domain, wrangler-provisioned): renders
   pages at request time (upstream fetches edge-cached ~5 min) and exposes
   `/api/wikisync/:name` (server-side WikiSync proxy, public). Pages and API
-  are same-origin → zero CORS anywhere. `bun test` covers data assembly.
-  `wrangler.jsonc` lives at the REPO ROOT (Workers Builds runs from the
-  repo root and ignored the dashboard root-directory setting — see
-  docs/DESIGN.md); deploy with `bunx wrangler deploy` from the root, or
-  auto via Workers Builds on master (same as dotfiles/cdn `cdn-explorer`).
+  are same-origin → zero CORS anywhere. `bun test` covers data assembly;
+  deploy with `bunx wrangler deploy` (Workers Builds off master is the
+  eventual shape, same as dotfiles/cdn `cdn-explorer`).
 - **`packages/legacy`** — quarantined pre-revive code (stars/GE/stream, Oct
   2025). Has uncommitted local changes in the main checkout (`dmm.ts`,
   `stars.ts`, `dmm-ranarr.ts`) — do not delete without the user; dissect or

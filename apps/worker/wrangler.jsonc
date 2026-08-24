@@ -1,11 +1,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  // Config lives at the REPO ROOT on purpose: Workers Builds runs its deploy
-  // command from the repo root and ignored the dashboard root-directory
-  // setting (4 failed builds, 2026-08-24). One worker, one config, no
-  // dashboard build configuration needed — the defaults just work.
+  // Workers Builds: root directory is apps/worker (dashboard build config).
   "name": "osrs",
-  "main": "apps/worker/src/index.ts",
+  "main": "src/index.ts",
   "compatibility_date": "2026-08-01",
   "observability": { "enabled": true },
 
