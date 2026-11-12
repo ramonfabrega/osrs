@@ -234,6 +234,7 @@
   input.search::placeholder { color: var(--ink-faint); }
   input.search:focus { border-color: var(--gold-deep); }
   .chk { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; color: var(--ink-mute); cursor: pointer; user-select: none; }
+  .chk[hidden] { display: none; }
   .chk input { accent-color: var(--gold-deep); width: 15px; height: 15px; }
 
   .boss-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 16px; align-items: center; }
@@ -330,6 +331,36 @@
   @media (max-width: 480px) {
     .band { grid-template-columns: 1fr; }
   }
+
+  /* ---------- together (?p=both) ---------- */
+  .who {
+    display: inline-block; min-width: 17px; text-align: center;
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600; line-height: 16px;
+    border-radius: 3px; border: 1px solid var(--edge); color: #3A3327; margin-left: 2px;
+  }
+  .who.r.has, .section-sub .who.r { color: #14100A; background: var(--gold); border-color: var(--gold); }
+  .who.f.has, .section-sub .who.f { color: #14100A; background: var(--ice); border-color: var(--ice); }
+  .duo {
+    font-family: var(--mono); font-size: 9.5px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--green); border: 1px solid rgba(134,191,106,0.45);
+    border-radius: 3px; padding: 0 5px; margin-left: 6px; vertical-align: 2px; white-space: nowrap;
+  }
+  .bccarry { font-family: var(--mono); font-size: 10.5px; color: var(--ink-mute); margin-top: 4px; }
+  .bccarry .r { color: var(--gold); } .bccarry .f { color: var(--ice); }
+  .fill.lead { opacity: 0.38; }
+  .dmark { position: absolute; top: 30px; width: 8px; height: 8px; transform: translateX(-50%) rotate(45deg); pointer-events: none; }
+  .dmark.r { background: var(--gold); box-shadow: 0 0 10px rgba(217,180,74,0.8); }
+  .dmark.f { background: var(--ice); box-shadow: 0 0 10px rgba(159,199,232,0.8); }
+  .mlabel { position: absolute; top: 12px; font-family: var(--mono); font-size: 11.5px; font-weight: 700; white-space: nowrap; pointer-events: none; }
+  .mlabel.r { color: var(--gold); } .mlabel.f { color: var(--ice); }
+  .mlabel.lo { transform: translateX(calc(-100% + 2px)); } .mlabel.hi { transform: translateX(-2px); }
+  .card .num.f { color: var(--ice); }
+  .card .num.r { color: var(--gold); }
+  tbody tr.split td { background: rgba(159,199,232,0.035); }
+  @media (max-width: 640px) {
+    body.both .btask { grid-template-columns: 58px 1fr 40px 40px; gap: 8px; }
+    body.both .btask .btchecks { display: block; }
+  }
 </style>
 </head>
 <body>
@@ -353,7 +384,8 @@
   </div>
 
   <h2>The task list</h2>
-  <p class="section-sub">Default view: everything <span class="acct" id="subiron"></span> hasn't done, easiest first by the wiki's crowdsourced completion rate. The gold line marks where Elite unlocks under the current sort.</p>
+  <p class="section-sub" id="secsub-one">Default view: everything <span class="acct" id="subiron"></span> hasn't done, easiest first by the wiki's crowdsourced completion rate. The gold line marks where Elite unlocks under the current sort.</p>
+  <p class="section-sub" id="secsub-both" hidden>Both ironmen side by side. Default view: what <b>neither</b> of you has, grouped by boss and ranked by the points still open for both. A boss where you're both missing 14 points comes before one where you each miss a different 7. It opens on the Easy–Elite tiers; tap Master or GM to add them. <span class="who r">R</span> / <span class="who f">F</span> marks who already has a task, so that person can carry or teach it. <span class="duo">group</span> marks content you can do together (hand-kept list).</p>
 
   <div class="filters">
     <span class="seg-ctl" id="viewctl">
@@ -362,11 +394,13 @@
     </span>
     <span class="seg-ctl" id="statusctl">
       <button data-s="todo" class="on">To do</button>
+      <button data-s="split" hidden>One of us</button>
       <button data-s="done">Done</button>
       <button data-s="all">All</button>
     </span>
     <span class="tier-toggles" id="tierctl"></span>
-    <label class="chk"><input type="checkbox" id="mainonly"> done on main</label>
+    <label class="chk"><input type="checkbox" id="mainonly"> <span id="mainonly-lbl">done on main</span></label>
+    <label class="chk" id="groupchk" hidden><input type="checkbox" id="grouponly"> group content only</label>
     <input class="search" id="search" type="search" placeholder="search task / boss&hellip;">
   </div>
   <div class="boss-chips" id="bosschips"></div>
@@ -393,7 +427,7 @@
     </table>
   </div>
 
-  <p class="kbd-hints"><kbd>←</kbd><kbd>→</kbd> tier &middot; <kbd>t</kbd> tasks &middot; <kbd>b</kbd> bosses &middot; <kbd>/</kbd> search &middot; <kbd>1</kbd><kbd>2</kbd> player &middot; <kbd>esc</kbd> clear</p>
+  <p class="kbd-hints"><kbd>←</kbd><kbd>→</kbd> tier &middot; <kbd>t</kbd> tasks &middot; <kbd>b</kbd> bosses &middot; <kbd>/</kbd> search &middot; <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> player &middot; <kbd>esc</kbd> clear</p>
 
   <footer>
     sources: OSRS Wiki Bucket API (task list) &middot; Module:Combat Achievements/completion.json (comp%) &middot; WikiSync via RuneLite (per-account progress)<br>
@@ -427,6 +461,49 @@ const tierReached = pts => { let r = null; for (const tier of TIERS) if (pts >= 
 
 // ---- per-player globals (set by applyPlayer) ----
 let cur = null, NEED = 0, ironPts = 0, mainPts = 0;
+
+// ---- together mode (?p=both): ramon's iron vs fernando's iron ----
+// Per task: t.a = Ramón's iron has it, t.f = Fernando's iron has it,
+// t.i = either has it (so "not t.i" = the shared gap), t.x = either main has it.
+const BOTH = 'both';
+const isBoth = () => cur === BOTH;
+const PR = PLAYERS.ramon, PF = PLAYERS.fernando;
+let rPts = 0, fPts = 0;
+// Hand-kept: monsters you can fight as a pair (raids, group bosses, group
+// skilling bosses). Some of their tasks are still solo-only; the tag means
+// "you can go there together", not "every task is a duo task".
+const GROUP = new Set([
+  'Chambers of Xeric', 'Chambers of Xeric: Challenge Mode',
+  'Theatre of Blood', 'Theatre of Blood: Entry Mode', 'Theatre of Blood: Hard Mode',
+  'Tombs of Amascut', 'Tombs of Amascut: Entry Mode', 'Tombs of Amascut: Expert Mode',
+  'Nex', 'The Nightmare', 'Royal Titans', 'Yama', 'Corporeal Beast',
+  'General Graardor', "K'ril Tsutsaroth", "Kree'arra", 'Commander Zilyana',
+  'Dagannoth Prime', 'Dagannoth Rex', 'Dagannoth Supreme',
+  'Kalphite Queen', 'King Black Dragon', 'Giant Mole', 'Sarachnis', 'Scurrius',
+  'Chaos Elemental', 'Callisto', 'Venenatis', "Vet'ion", 'Scorpia',
+  'The Hueycoatl', 'Tempoross', 'Wintertodt', 'Zalcano',
+]);
+const duoTag = m => isBoth() && GROUP.has(m) ? '<span class="duo">group</span>' : '';
+const whoHtml = t => `<span class="who r${t.a ? ' has' : ''}">R</span><span class="who f${t.f ? ' has' : ''}">F</span>`;
+// does a task pass the status filter?
+function statusOk(t) {
+  if (state.status === 'all') return true;
+  if (!isBoth()) return (state.status === 'done') === t.i;
+  if (state.status === 'todo') return !t.a && !t.f;
+  if (state.status === 'split') return t.a !== t.f;
+  return t.a && t.f;
+}
+// points a task still puts on the table in the current view
+function openPts(t) {
+  if (!isBoth()) return t.i ? 0 : t.p;
+  if (state.status === 'split') return t.a !== t.f ? t.p : 0;
+  return t.a || t.f ? 0 : t.p;
+}
+const TO_ELITE = ['Easy', 'Medium', 'Hard', 'Elite'];
+let autoTiers = false;
+const syncTierPills = () =>
+  document.querySelectorAll('#tierctl .pill').forEach(x => x.classList.toggle('off', !state.tiers.has(x.dataset.t)));
+const needTxt = pts => ELITE - pts > 0 ? `${ELITE - pts} to Elite` : 'Elite ✓';
 
 document.getElementById('snapdate').textContent = DATA.generated;
 
@@ -467,6 +544,36 @@ function renderHeader(ironByTier, mainByTier, ironDone, mainDone) {
   renderMeter();
 }
 
+function renderHeaderBoth(z) {
+  document.getElementById('accline').innerHTML =
+    `<span class="acct">${PR.iron}</span> + <span class="acct">${PF.iron}</span> (both ironmen) &nbsp;&middot;&nbsp; mains not compared`;
+  document.getElementById('th-iron').textContent = PR.iron;
+  document.getElementById('th-main').textContent = PF.iron;
+  document.getElementById('statband').innerHTML = `
+  <div class="card hero">
+    <div class="num">${z.gapLE}</div>
+    <div class="label">pts neither of you has &middot; Easy–Elite</div>
+    <div class="sub">${z.gapLEN} tasks &middot; ${z.gapPts} pts counting Master &amp; GM</div>
+  </div>
+  <div class="card">
+    <div class="num r">${rPts}<small> pts</small></div>
+    <div class="label">${PR.label} &mdash; ${PR.iron}</div>
+    <div class="sub${ELITE - rPts <= 0 ? ' good' : ''}">${needTxt(rPts)} &middot; ${z.rDone}/${tasks.length} tasks</div>
+  </div>
+  <div class="card">
+    <div class="num f">${fPts}<small> pts</small></div>
+    <div class="label">${PF.label} &mdash; ${PF.iron}</div>
+    <div class="sub${ELITE - fPts <= 0 ? ' good' : ''}">${needTxt(fPts)} &middot; ${z.fDone}/${tasks.length} tasks</div>
+  </div>
+  <div class="card">
+    <div class="num">${z.bothN}</div>
+    <div class="label">tasks you both have</div>
+    <div class="sub">only ${PR.label} ${z.rOnlyN} &middot; only ${PF.label} ${z.fOnlyN}</div>
+  </div>`;
+  TT = z;
+  renderMeter();
+}
+
 // ---- the rail: true-scale meter, clickable tier segments ----
 let TT = null;
 const segTint = { Easy:'rgba(176,141,87,0.30)', Medium:'rgba(159,170,181,0.22)', Hard:'rgba(110,100,89,0.34)', Elite:'rgba(159,199,232,0.20)', Master:'rgba(192,88,74,0.22)', Grandmaster:'rgba(217,180,74,0.20)' };
@@ -484,6 +591,21 @@ function renderMeter() {
     ticks += `<div class="tick${isE?' elite':''}" style="left:${pct(cumThresh[tier])}"></div>
               <div class="tick-label${isE?' elite':''}${minor}" data-tier="${tier}" style="left:${pct(cumThresh[tier])}">${TIER_ABBR[tier]} ${cumThresh[tier]}</div>`;
   }
+  if (isBoth()) {
+    // solid fill = where you both are; faint fill = the leader's head start
+    const lo = Math.min(rPts, fPts), hi = Math.max(rPts, fPts), rHi = rPts >= fPts;
+    const mk = (who, pts, side, label) =>
+      `<div class="dmark ${who}" style="left:${pct(pts)}"></div><div class="mlabel ${who} ${side}" style="left:${pct(pts)}">${label} ${pts}</div>`;
+    document.getElementById('meter').innerHTML = `
+      <div class="track">${segs}</div>
+      <div class="fill lead" style="width:${pct(hi)}"></div>
+      <div class="fill" style="width:${pct(lo)}"></div>
+      ${ticks}
+      ${mk('r', rPts, rHi ? 'hi' : 'lo', PR.label)}
+      ${mk('f', fPts, rHi ? 'lo' : 'hi', PF.label)}`;
+    tierDetail();
+    return;
+  }
   document.getElementById('meter').innerHTML = `
     <div class="track">${segs}</div>
     <div class="fill" style="width:${pct(ironPts)}"></div>
@@ -495,6 +617,15 @@ function renderMeter() {
 function tierDetail(hover) {
   const tier = hover || state.sel;
   const el = document.getElementById('tierdetail');
+  if (isBoth()) {
+    if (!tier) {
+      el.innerHTML = `${PR.label} <b>${rPts}</b> &middot; ${PF.label} <b>${fPts}</b> of <b>${ELITE}</b> pts for Elite &mdash; ${PR.label} ${needTxt(rPts)}, ${PF.label} ${needTxt(fPts)} <span class="dim">&middot; any tier counts &middot; click a segment to focus a tier</span>`;
+      return;
+    }
+    const tot = totalByTier[tier], g = TT.gapByTier[tier];
+    el.innerHTML = `<b>${tier}</b> &middot; ${POINTS[tier]} pt${POINTS[tier]>1?'s':''} each &middot; ${PR.label} <b>${TT.rByTier[tier]}/${tot}</b> &middot; ${PF.label} <b>${TT.fByTier[tier]}/${tot}</b> &middot; neither <b>${g}</b> (<b>${g*POINTS[tier]}</b> shared pts) <span class="dim">&middot; threshold ${cumThresh[tier]}</span>`;
+    return;
+  }
   if (!tier) {
     el.innerHTML = `<b>${ironPts}</b> of <b>${ELITE}</b> pts for Elite &mdash; any tier counts <span class="dim">&middot; click a segment or press ←/→ to focus a tier</span>`;
     return;
@@ -538,6 +669,7 @@ const state = {
   tiers: new Set(TIERS),
   sel: null,
   mainonly: false,
+  group: false,
   q: '',
   boss: null,
   sort: { k: 'comp', dir: -1 },
@@ -549,10 +681,10 @@ document.querySelectorAll('#viewctl button').forEach(x => x.classList.toggle('on
 // ---- boss chips: biggest remaining point sources (≤ Elite) ----
 function buildBossChips() {
   const src = {};
-  for (const t of tasks) if (!t.i && t.p <= 4) src[t.m] = (src[t.m]||0) + t.p;
+  for (const t of tasks) if (!t.i && t.p <= 4 && (!state.group || GROUP.has(t.m))) src[t.m] = (src[t.m]||0) + t.p;
   const top = Object.entries(src).sort((a,b)=>b[1]-a[1]).slice(0,10);
   document.getElementById('bosschips').innerHTML =
-    '<span class="lbl">biggest remaining &leq; elite</span>' +
+    `<span class="lbl">${isBoth() ? 'biggest shared gap' : 'biggest remaining'} &leq; elite</span>` +
     top.map(([m,p]) => `<span class="chip${state.boss === m ? ' on' : ''}" data-m="${m.replace(/"/g,'&quot;')}">${m} <b>${p}</b></span>`).join('');
 }
 document.getElementById('bosschips').addEventListener('click', e => {
@@ -588,6 +720,7 @@ document.getElementById('tierctl').addEventListener('click', e => {
   render();
 });
 document.getElementById('mainonly').addEventListener('change', e => { state.mainonly = e.target.checked; render(); });
+document.getElementById('grouponly').addEventListener('change', e => { state.group = e.target.checked; buildBossChips(); render(); });
 document.getElementById('search').addEventListener('input', e => { state.q = e.target.value.toLowerCase().trim(); render(); });
 document.querySelectorAll('th.sortable').forEach(th => th.addEventListener('click', () => {
   const k = th.dataset.k;
@@ -607,8 +740,9 @@ const cmp = {
 function render() {
   let rows = tasks.filter(t =>
     state.tiers.has(t.t) &&
-    (state.status === 'all' || (state.status === 'done') === t.i) &&
+    statusOk(t) &&
     (!state.mainonly || t.x) &&
+    (!state.group || GROUP.has(t.m)) &&
     (!state.boss || t.m === state.boss) &&
     (!state.q || (t.n + ' ' + t.m + ' ' + t.d).toLowerCase().includes(state.q))
   );
@@ -619,8 +753,11 @@ function render() {
   const th = document.querySelector(`th[data-k="${k}"] .arr`);
   if (th) th.textContent = dir === 1 ? ' ▲' : ' ▼';
 
-  const ptsInView = rows.reduce((s,t) => s + (t.i ? 0 : t.p), 0);
+  const ptsInView = rows.reduce((s,t) => s + openPts(t), 0);
   const cl = document.getElementById('countline');
+  const ptsLine = state.status === 'done' ? '' : isBoth()
+    ? ` &middot; <b>${ptsInView}</b> ${state.status === 'split' ? 'pts one of you can carry' : 'shared pts on the table'} in this view &middot; Elite: ${PR.label} <b>${Math.max(ELITE - rPts, 0)}</b>, ${PF.label} <b>${Math.max(ELITE - fPts, 0)}</b> to go`
+    : ` &middot; <b>${ptsInView}</b> pts on the table in this view &middot; need <b>${NEED}</b>`;
 
   const bossgrid = document.getElementById('bossgrid'), tablewrap = document.getElementById('tablewrap');
   if (state.view === 'boss') {
@@ -631,25 +768,29 @@ function render() {
       const all = tasks.filter(t => t.m === m);
       return {
         m, ts,
-        rem: ts.reduce((s,t) => s + (t.i ? 0 : t.p), 0),
+        rem: ts.reduce((s,t) => s + openPts(t), 0),
         doneN: all.filter(t => t.i).length,
         mainN: all.filter(t => t.x).length,
         allN: all.length,
+        // together mode
+        rN: all.filter(t => t.a).length, fN: all.filter(t => t.f).length,
+        bothN: all.filter(t => t.a && t.f).length,
+        rCarry: all.reduce((s,t) => s + (t.a && !t.f ? t.p : 0), 0),
+        fCarry: all.reduce((s,t) => s + (t.f && !t.a ? t.p : 0), 0),
       };
     });
     garr.sort((a,b) => (b.rem - a.rem) || (b.ts.length - a.ts.length) || a.m.localeCompare(b.m));
-    cl.innerHTML = `<b>${garr.length}</b> bosses &middot; <b>${rows.length}</b> tasks` +
-      (state.status !== 'done' ? ` &middot; <b>${ptsInView}</b> pts on the table in this view &middot; need <b>${NEED}</b>` : '') +
+    cl.innerHTML = `<b>${garr.length}</b> bosses &middot; <b>${rows.length}</b> tasks` + ptsLine +
       (state.boss ? ` &middot; boss: <b>${state.boss}</b>` : '');
     bossgrid.innerHTML = garr.map(g => bcardHtml(g, expanded.has(g.m) || garr.length === 1)).join('')
       || `<div class="empty">No tasks match these filters.</div>`;
     return;
   }
   tablewrap.hidden = false; bossgrid.hidden = true;
-  cl.innerHTML = `<b>${rows.length}</b> tasks shown` +
-    (state.status !== 'done' ? ` &middot; <b>${ptsInView}</b> pts on the table in this view &middot; need <b>${NEED}</b>` : '') +
+  cl.innerHTML = `<b>${rows.length}</b> tasks shown` + ptsLine +
     (state.boss ? ` &middot; boss: <b>${state.boss}</b>` : '');
-  let html = '', cumPts = 0, cutPlaced = state.status === 'done' || NEED <= 0;
+  // the Elite cut line is a single-account idea; together mode has no one NEED
+  let html = '', cumPts = 0, cutPlaced = isBoth() || state.status === 'done' || NEED <= 0;
   for (const t of rows) {
     if (!cutPlaced && !t.i) {
       cumPts += t.p;
@@ -666,23 +807,31 @@ function render() {
 
 function bcardHtml(g, open) {
   const tcounts = TIERS
-    .map(tier => ({ tier, n: g.ts.filter(t => t.t === tier && !t.i).length }))
+    .map(tier => ({ tier, n: g.ts.filter(t => t.t === tier && openPts(t)).length }))
     .filter(x => x.n)
     .map(x => `<span class="${tclass(x.tier)}">${x.n} ${TIER_ABBR[x.tier]}</span>`)
     .join(' ');
+  const both = isBoth();
   const tasksHtml = !open ? '' : `<div class="btasks">` + g.ts.map(t => `
-    <div class="btask${t.i ? ' done-t' : ''}">
+    <div class="btask${(both ? t.a && t.f : t.i) ? ' done-t' : ''}">
       <span class="pill ${tclass(t.t)}">${TIER_ABBR[t.t]}</span>
       <div><span class="btname">${t.n}</span><div class="btdesc">${t.d}</div></div>
       <span class="btpts">${t.p} pt${t.p>1?'s':''}</span>
       <span class="btcomp">${t.c == null ? '&mdash;' : t.c.toFixed(1) + '%'}</span>
-      <span class="btchecks">${t.i ? '<span class="yes">✓</span>' : '<span class="no">·</span>'} ${t.x ? '<span class="yes main">✓</span>' : '<span class="no">·</span>'}</span>
+      <span class="btchecks">${both ? whoHtml(t) : (t.i ? '<span class="yes">✓</span>' : '<span class="no">·</span>') + ' ' + (t.x ? '<span class="yes main">✓</span>' : '<span class="no">·</span>')}</span>
     </div>`).join('') + `</div>`;
+  const carry = !both || !(g.rCarry || g.fCarry) ? '' : `<div class="bccarry">can carry:` +
+    (g.rCarry ? ` <span class="r">${PR.label} ${g.rCarry} pts</span>` : '') +
+    (g.fCarry ? ` <span class="f">${PF.label} ${g.fCarry} pts</span>` : '') + `</div>`;
+  const remLbl = !both ? 'pts left' : state.status === 'split' ? 'carry pts' : 'shared pts';
   return `<div class="bcard${open ? ' open' : ''}" tabindex="0" data-m="${g.m.replace(/"/g,'&quot;')}">
-    <div class="bctop"><span class="bname">${g.m}</span><span class="bpts">${g.rem} pts left</span></div>
+    <div class="bctop"><span class="bname">${g.m}${duoTag(g.m)}</span><span class="bpts">${g.rem} ${remLbl}</span></div>
     <div class="bcline">${tcounts || '<span style="color:var(--green)">tier-complete ✓</span>'}</div>
-    <div class="minibar"><span style="width:${(g.doneN/g.allN*100).toFixed(1)}%"></span></div>
-    <div class="bcmeta">done ${g.doneN}/${g.allN} &middot; main ${g.mainN}/${g.allN}${open ? '' : ' &middot; open ↵'}</div>
+    <div class="minibar"><span style="width:${((both ? g.bothN : g.doneN)/g.allN*100).toFixed(1)}%"></span></div>
+    <div class="bcmeta">${both
+      ? `${PR.label} ${g.rN}/${g.allN} &middot; ${PF.label} ${g.fN}/${g.allN} &middot; both ${g.bothN}`
+      : `done ${g.doneN}/${g.allN} &middot; main ${g.mainN}/${g.allN}`}${open ? '' : ' &middot; open ↵'}</div>
+    ${carry}
     ${tasksHtml}
   </div>`;
 }
@@ -714,8 +863,8 @@ addEventListener('keydown', e => {
   else if (e.key === '/') { e.preventDefault(); searchEl.focus(); }
   else if (e.key === 'b') setView('boss');
   else if (e.key === 't') setView('flat');
-  else if (e.key === '1' || e.key === '2') {
-    const k = Object.keys(PLAYERS)[+e.key - 1];
+  else if (e.key === '1' || e.key === '2' || e.key === '3') {
+    const k = [...Object.keys(PLAYERS), BOTH][+e.key - 1];
     if (k && k !== cur) applyPlayer(k);
   }
   else if (e.key === 'Escape') {
@@ -728,6 +877,16 @@ function rowHtml(t) {
   const compCell = t.c == null
     ? `<span class="compnum" style="color:var(--ink-faint)">&mdash;</span>`
     : `<span class="compnum">${t.c.toFixed(1)}</span><span class="compbar"><span style="width:${t.c}%"></span></span>`;
+  if (isBoth()) return `<tr${t.a && t.f ? ' class="done"' : t.a || t.f ? ' class="split"' : ''}>
+    <td class="monster">${t.m}${duoTag(t.m)}</td>
+    <td class="taskcell"><div class="tname">${t.n}</div><div class="tdesc">${t.d}</div></td>
+    <td><span class="pill ${tclass(t.t)}">${TIER_ABBR[t.t]}</span></td>
+    <td class="type">${t.y}</td>
+    <td class="pts">${t.p}</td>
+    <td class="comp">${compCell}</td>
+    <td class="acct-col">${t.a ? '<span class="who r has">R</span>' : '<span class="no">·</span>'}</td>
+    <td class="acct-col">${t.f ? '<span class="who f has">F</span>' : '<span class="no">·</span>'}</td>
+  </tr>`;
   return `<tr${t.i ? ' class="done"' : ''}>
     <td class="monster">${t.m}</td>
     <td class="taskcell"><div class="tname">${t.n}</div><div class="tdesc">${t.d}</div></td>
@@ -742,14 +901,89 @@ function rowHtml(t) {
 
 // ---- player toggle + init ----
 document.getElementById('playerctl').innerHTML = Object.entries(PLAYERS)
-  .map(([k, p]) => `<button data-p="${k}">${p.label}</button>`).join('');
+  .map(([k, p]) => `<button data-p="${k}">${p.label}</button>`).join('') +
+  `<button data-p="${BOTH}">Both</button>`;
 document.getElementById('playerctl').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.p !== cur) applyPlayer(b.dataset.p);
 });
 
+// controls whose meaning changes between one account and the pair
+const STATUS_LBL = {
+  one:  { todo: 'To do', done: 'Done', all: 'All' },
+  both: { todo: 'Neither', split: 'One of us', done: 'Both', all: 'All' },
+};
+function setMode(both) {
+  document.body.classList.toggle('both', both);
+  document.getElementById('secsub-one').hidden = both;
+  document.getElementById('secsub-both').hidden = !both;
+  document.getElementById('groupchk').hidden = !both;
+  document.getElementById('mainonly-lbl').textContent = both ? 'done on a main' : 'done on main';
+  if (!both) {
+    if (state.status === 'split') state.status = 'todo';
+    state.group = false; document.getElementById('grouponly').checked = false;
+  }
+  const lbl = STATUS_LBL[both ? 'both' : 'one'];
+  document.querySelectorAll('#statusctl button').forEach(x => {
+    x.hidden = !lbl[x.dataset.s];
+    if (lbl[x.dataset.s]) x.textContent = lbl[x.dataset.s];
+    x.classList.toggle('on', x.dataset.s === state.status);
+  });
+  const url = new URL(location.href);
+  url.searchParams.set('p', cur);
+  history.replaceState(null, '', url);
+}
+
+function applyBoth() {
+  const rset = new Set(PR.ironIds), fset = new Set(PF.ironIds);
+  const rm = new Set(PR.mainIds), fm = new Set(PF.mainIds);
+  const z = { rByTier: {}, fByTier: {}, gapByTier: {}, rDone: 0, fDone: 0, bothN: 0, rOnlyN: 0, fOnlyN: 0, gapN: 0, gapPts: 0, gapLE: 0, gapLEN: 0 };
+  for (const tier of TIERS) { z.rByTier[tier] = 0; z.fByTier[tier] = 0; z.gapByTier[tier] = 0; }
+  rPts = 0; fPts = 0;
+  for (const t of tasks) {
+    t.a = rset.has(t.id); t.f = fset.has(t.id);
+    t.i = t.a || t.f; t.x = rm.has(t.id) || fm.has(t.id);
+    if (t.a) { z.rByTier[t.t]++; rPts += t.p; z.rDone++; }
+    if (t.f) { z.fByTier[t.t]++; fPts += t.p; z.fDone++; }
+    if (t.a && t.f) z.bothN++;
+    else if (t.a) z.rOnlyN++;
+    else if (t.f) z.fOnlyN++;
+    else { z.gapByTier[t.t]++; z.gapN++; z.gapPts += t.p; if (t.p <= 4) { z.gapLE += t.p; z.gapLEN++; } }
+  }
+  NEED = 0;
+  renderHeaderBoth(z);
+}
+
 function applyPlayer(key) {
+  const wasBoth = isBoth();
   cur = key;
+  if (key === BOTH) {
+    // the boss is the planning unit for a pair — open there unless a view was linked
+    if (!wasBoth && !new URLSearchParams(location.search).get('view') && state.view !== 'boss') {
+      state.view = 'boss';
+      document.querySelectorAll('#viewctl button').forEach(x => x.classList.toggle('on', x.dataset.v === 'boss'));
+    }
+    // open on the road-to-Elite tiers: ranked across all tiers, raid Master/GM
+    // tasks top the list and drown out what a pair can actually do tonight
+    if (!wasBoth && state.tiers.size === TIERS.length) {
+      state.tiers = new Set(TO_ELITE); autoTiers = true;
+      syncTierPills();
+    }
+    document.querySelectorAll('#playerctl button').forEach(x => x.classList.toggle('on', x.dataset.p === cur));
+    setMode(true);
+    applyBoth();
+    buildBossChips();
+    render();
+    return;
+  }
+  if (wasBoth) {
+    setMode(false);
+    // undo the together default if it was never touched
+    if (autoTiers && state.tiers.size === TO_ELITE.length && TO_ELITE.every(t => state.tiers.has(t))) {
+      state.tiers = new Set(TIERS); syncTierPills();
+    }
+    autoTiers = false;
+  }
   const p = PLAYERS[key];
   const iset = new Set(p.ironIds), mset = new Set(p.mainIds);
   ironPts = 0; mainPts = 0;
@@ -769,7 +1003,7 @@ function applyPlayer(key) {
 }
 
 const pparam = new URLSearchParams(location.search).get('p');
-applyPlayer(PLAYERS[pparam] ? pparam : 'ramon');
+applyPlayer(PLAYERS[pparam] || pparam === BOTH ? pparam : 'ramon');
 </script>
 </body>
 </html>
